@@ -70,19 +70,19 @@ Use pattern matching whenever possible to become better at doing pattern matchin
 
 The problems are specified in the following:
 
-## Exercise P05 - Reverse a list
+## 1. P05 - Reverse a list
 ```scala
 reverse(List(1, 1, 2, 3, 5, 8))
 res0: List[Int] = List(8, 5, 3, 2, 1, 1)
 ```
 
-## Exercise P06 - Find out whether a list is a palindrome
+## 2. P06 - Find out whether a list is a palindrome
 ```scala
 isPalindrome(List(1, 2, 3, 2, 1))
 res0: Boolean = true
 ```
 
-## Exercise P09 - Pack consecutive duplicates of list elements into sublists
+## 3. P09 - Pack consecutive duplicates of list elements into sublists
 If a list contains repeated elements they should be placed in separate sublists.
 
 ```scala
@@ -90,7 +90,7 @@ pack(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
 res0: List[List[Symbol]] = List(List('a, 'a, 'a, 'a), List('b), List('c, 'c), List('a, 'a), List('d), List('e, 'e, 'e, 'e))
 ```
 
-## Exercise P10 - Run-length encoding of a list
+## 4. P10 - Run-length encoding of a list
 Use the result of problem P09 to implement the so-called run-length encoding data compression method. Consecutive duplicates of elements are encoded as tuples (N, E) where N is the number of duplicates of the element E.
 
 ```scala
@@ -98,7 +98,7 @@ encode(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
 res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
 ```
 
-## Exercise P12 - Decode a run-length encoded list
+## 5. P12 - Decode a run-length encoded list
 Given a run-length code list generated as specified in problem P10, construct its uncompressed version.
 
 ```scala
