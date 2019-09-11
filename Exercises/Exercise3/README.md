@@ -23,24 +23,8 @@ Go to the binarytree.scala file and look at the following description of the imp
 
 An End is equivalent to an empty tree.
 A Branch has a value, and two descendant trees.
-The toString functions are relatively arbitrary, but they yield a more compact output than Scala's default.
-Putting a plus in front of the T makes the class covariant; it will be able to hold subtypes of whatever type it's created for.
-(This is important so that End can be a singleton object; as a singleton, it must have a specific type, so we give it type Nothing, which is a subtype of every other type.)
 
-A tree with only a root node would be Node('a') and an empty tree would be End.
-An example tree can be made with:
-
-```scala
-val tree = Node('a',
-    Node('b', Node('d'), Node('e')),
-    Node('c', End, Node('f', Node('g'), End)))
-```
-
-The result of calling tree.toString should be:
-
-```scala
-val expected = "T(a T(b T(d . .) T(e . .)) T(c . T(f T(g . .) .)))"
-```
+A tree with only a root node would be Node(4) and an empty tree would be End.
 
 ### Implementation: addNode
 
