@@ -60,56 +60,6 @@ def isBinarySearchTree(bt:BinaryTree):Boolean
 
 The exercise is adapted from P57 at <http://aperiodic.net/phil/scala/s-99/.>
 
-## Group the elements of a set into disjoint subsets
-
-Create a new file and implement P27 from <http://aperiodic.net/phil/scala/s-99/> as described in the following.
-
-**Hint**: You need to solve P26 before doing P27.
-
-### a)
-
-In how many ways can a group of 9 people work in 3 disjoint subgroups of 2, 3 and 4 persons? Write a function that generates all the possibilities.
-Example:
-
-```scala
-group3(List("Aldo", "Beat",
-        "Carla", "David",
-        "Evi", "Flip",
-        "Gary", "Hugo",
-        "Ida"))
-res0: List[List[List[String]]] =
-        List(List(
-        List(Aldo, Beat),
-        List(Carla, David),
-        List(Evi, Flip, Gary, Hugo, Ida)), ...
-```
-
-### b)
-
-Generalize the above predicate in a way that we can specify a list of group sizes and the predicate will return a list of groups.
-
-Example:
-
-```scala
-group(
-    List(2, 2, 5),
-    List("Aldo", "Beat",
-        "Carla", "David",
-        "Evi", "Flip",
-        "Gary", "Hugo",
-        "Ida"))
-res0:
-    List[List[List[String]]] =
-        List(List(
-        List(Aldo, Beat),
-        List(Carla, David),
-        List(Evi, Flip, Gary, Hugo, Ida)), ...
-```
-
-Note that we do not want permutations of the group members; i.e. ((Aldo, Beat), ...) is the same solution as ((Beat, Aldo), ...). However, we make a difference between ((Aldo, Beat), (Carla, David), ...) and ((Carla, David), (Aldo, Beat), ...).
-
-You may find more about this combinatorial problem in a good book on discrete mathematics under the term "multinomial coefficients".
-
 ## Gray Code
 
 Create a new file and implement P49 from <http://aperiodic.net/phil/scala/s-99/> as described in the following.
@@ -126,5 +76,3 @@ For instance:
 gray(3)
 res0 List[String] = List(000, 001, 011, 010, 110, 111, 101, 100)
 ```
-
-See if you can use memoization to make the function more efficient.
