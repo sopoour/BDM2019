@@ -1,28 +1,33 @@
-[0m[[0m[0mdebug[0m] [0m[0mInvalidating C:\Program Files\Java\jdk1.8.0_221\jre\lib\rt.jar: class java.lang.String now provided by C:\Program Files\Java\jre1.8.0_221\lib\rt.jar[0m
-[0m[[0m[0mdebug[0m] [0m[0m[0m
-[0m[[0m[0mdebug[0m] [0m[0mInitial source changes: [0m
-[0m[[0m[0mdebug[0m] [0m[0m	removed:Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0m	added: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0m	modified: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mInvalidated products: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mExternal API changes: API Changes: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mModified binary dependencies: Set(C:\Program Files\Java\jdk1.8.0_221\jre\lib\rt.jar)[0m
-[0m[[0m[0mdebug[0m] [0m[0mInitial directly invalidated classes: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0m[0m
-[0m[[0m[0mdebug[0m] [0m[0mSources indirectly invalidated by:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	product: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0m	binary dep: Set(C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part1\FlattenNestedList.scala, C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part2\SortingLists.scala, C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part3\HuffmanCoding.scala)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	external source: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mAll sources are invalidated.[0m
-[0m[[0m[0mdebug[0m] [0m[0mRecompiling all 3 sources: invalidated sources (3) exceeded 50.0% of all sources[0m
-[0m[[0m[0minfo[0m] [0m[0mCompiling 3 Scala sources to C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\target\scala-2.13\classes ...[0m
-[0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.2.5:compile for Scala 2.13.0[0m
-[0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.2.5:compile for Scala 2.13.0[0m
-[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 2cb36ac2 for Scala compiler version 2.13.0[0m
-[0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
-[0m[[0m[0mdebug[0m] [0m[0m	C:\Program Files\Java\jre1.8.0_221\lib\resources.jar;C:\Program Files\Java\jre1.8.0_221\lib\rt.jar;C:\Program Files\Java\jre1.8.0_221\lib\sunrsasign.jar;C:\Program Files\Java\jre1.8.0_221\lib\jsse.jar;C:\Program Files\Java\jre1.8.0_221\lib\jce.jar;C:\Program Files\Java\jre1.8.0_221\lib\charsets.jar;C:\Program Files\Java\jre1.8.0_221\lib\jfr.jar;C:\Program Files\Java\jre1.8.0_221\classes;C:\Users\soful\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.13.0.jar[0m
-[0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
-[0m[[0m[0mdebug[0m] [0m[0m	C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\target\scala-2.13\classes[0m
-[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 5.3377733 s[0m
-[0m[[0m[0minfo[0m] [0m[0mDone compiling.[0m
+[debug] 
+[debug] Initial source changes: 
+[debug] 	removed:Set()
+[debug] 	added: Set()
+[debug] 	modified: Set(C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part2\SortingLists.scala)
+[debug] Invalidated products: Set()
+[debug] External API changes: API Changes: Set()
+[debug] Modified binary dependencies: Set()
+[debug] Initial directly invalidated classes: Set(dk.itu.BIDMT.F19.P1.Part2.SortingLists)
+[debug] 
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set()
+[debug] 	binary dep: Set()
+[debug] 	external source: Set()
+[debug] All initially invalidated classes: Set(dk.itu.BIDMT.F19.P1.Part2.SortingLists)
+[debug] All initially invalidated sources:Set(C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part2\SortingLists.scala)
+[info] Compiling 1 Scala source to C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\target\scala-2.13\classes ...
+[debug] Getting org.scala-sbt:compiler-bridge_2.13:1.2.5:compile for Scala 2.13.0
+[debug] Getting org.scala-sbt:compiler-bridge_2.13:1.2.5:compile for Scala 2.13.0
+[debug] [zinc] Running cached compiler 324c0c4 for Scala compiler version 2.13.0
+[debug] [zinc] The Scala compiler is invoked with:
+[debug] 	-bootclasspath
+[debug] 	C:\Program Files\Java\jdk1.8.0_221\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_221\jre\classes;C:\Users\soful\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.13.0.jar
+[debug] 	-classpath
+[debug] 	C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\target\scala-2.13\classes
+[debug] Scala compilation took 1.7595665 s
+[info] Done compiling.
+[debug] New invalidations:
+[debug] 	Set()
+[debug] Initial set of included nodes: Set()
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] 	Set()
+[debug] All newly invalidated classes after taking into account (previously) recompiled classes:Set()

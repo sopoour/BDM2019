@@ -12,10 +12,12 @@ object FlattenNestedList {
     * @return : flattened list
     */
   def flatten (nestedList : List[Any]) : List[Any] = nestedList match{
-    //if list empty return empty list
+    //case 1: if empty list, return empty list
     case Nil => Nil
-    case (head: List[Any]):: tail => flatten(head)::: flatten(tail)
-    case head:: tail => head:: flatten(tail)
+    //case 2: if head is a list, the elements of the flattened head are prepended to the flattened tail
+    case (x: List[Any]) :: xs => flatten(x) ::: flatten(xs)
+    //case 3: if head is an element, the element is prepended to the flattened tail
+    case x :: xs => x :: flatten(xs)
   }
 
   def main(args: Array[String]):Unit = {

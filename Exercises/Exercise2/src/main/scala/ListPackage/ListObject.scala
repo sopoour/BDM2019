@@ -73,7 +73,7 @@ object ListObject {
       case h::tail => _encode(res:::List((h.length, h.head)), tail)
     }
     //go through pack list and apply _encode function
-    _encode(List(), pack(ls))
+    _encode(List(), pack1(ls))
   }
 
   //from exercise (functional solution)
@@ -96,7 +96,6 @@ object ListObject {
     }
     //Each element is mapped into a list by the _expand() function, while flatMap() does the flattening job.
     ls flatMap { e => _expand(List(), e)}
-  }
   }
 
   def main(args: Array[String]): Unit = {

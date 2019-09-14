@@ -9,7 +9,12 @@ object SortingLists {
     * For example, the sorting of the list: List(List('a', 'b', 'c'), List('d', 'e'), List('f', 'g', 'h'), List('d', 'e'), List('i', 'j', 'k', 'l'), List('m', 'n'), List('o'))
     * should be: List(List(o), List(d, e), List(d, e), List(m, n), List(a, b, c), List(f, g, h), List(i, j, k, l))
     */
-  def sortListLength(listOfLists: List[List[Char]]): List[List[Char]] = ???
+  def sortListLength(listOfLists: List[List[Char]]): List[List[Char]] = {
+    //sort list from small length to bigger length
+    listOfLists.sortWith {
+      _.length < _.length
+    }
+  }
 
   /**
     * Sort the sublists of the input list in an ascending order  based on the frequency of the lengths of these sublists.
@@ -30,8 +35,17 @@ object SortingLists {
     *   - sort the groups according to the number of sub-lists in each group
     *   - generate the final sorted list
     */
-  def sortListFreq(listOfLists: List[List[Char]]): List[List[Char]] = ???
-
+  def sortListFreq(listOfLists: List[List[Char]]): List[List[Char]] = {
+    //1. groupBy: Group my sub-lists by its length
+    //2. toList: Push these grouped sub-lists into a new list
+    //Evaluation 1+2: List((1,List(List(o))), (2,List(List(d, e), List(d, e), List(m, n))), (3,List(List(a, b, c), List(f, g, h))), (4,List(List(i, j, k, l))))
+    //3. map(x=>x._2): Get only the second index (the actual lists without the index number)
+    //Evaluation 3: List(List(List(o)), List(List(d, e), List(d, e), List(m, n)), List(List(a, b, c), List(f, g, h)), List(List(i, j, k, l)))
+    //4. sortBy(_.length): now the length of "Evaluation 3" list is basically the frequency of how often each list appears
+    //Evaluation 4: List(List(List(o)), List(List(i, j, k, l)), List(List(a, b, c), List(f, g, h)), List(List(d, e), List(d, e), List(m, n)))
+    //5. flatten: make the list flatter by removing redundant nested lists
+    listOfLists.groupBy(_.length).toList.map(x => x._2).sortBy(_.length).flatten
+  }
 
   def main(args: Array[String]):Unit = {
     val ls = List(List('a', 'b', 'c'), List('d', 'e'), List('f', 'g', 'h'), List('d', 'e'), List('i', 'j', 'k', 'l'), List('m', 'n'), List('o'))
