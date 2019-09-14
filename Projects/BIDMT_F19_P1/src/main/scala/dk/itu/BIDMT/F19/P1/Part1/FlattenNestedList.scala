@@ -11,7 +11,12 @@ object FlattenNestedList {
     * @param nestedList : input list of nested lists
     * @return : flattened list
     */
-  def flatten (nestedList : List[Any]) : List[Any] =  ???
+  def flatten (nestedList : List[Any]) : List[Any] = nestedList match{
+    //if list empty return empty list
+    case Nil => Nil
+    case (head: List[Any]):: tail => flatten(head)::: flatten(tail)
+    case head:: tail => head:: flatten(tail)
+  }
 
   def main(args: Array[String]):Unit = {
     val ls = List(List(1, 1),List(2,2), 2, List(List(10, 10), 20) ,List(3, List(5, 8)),3)
