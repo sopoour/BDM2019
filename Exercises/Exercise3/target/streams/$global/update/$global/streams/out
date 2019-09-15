@@ -281,11 +281,11 @@
 [debug] ignoring unhandled DependencyDescriptorMediator: class sbt.internal.librarymanagement.IvyScalaUtil$OverrideScalaMediator
 [debug] 	resolved ivy file produced in cache
 [debug] :: downloading artifacts ::
-[debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.13.0!scala-compiler.jar
-[debug] 	[NOT REQUIRED] jline#jline;2.14.6!jline.jar
-[debug] 	[NOT REQUIRED] org.scala-lang#scala-reflect;2.13.0!scala-reflect.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#scala-library;2.13.0!scala-library.jar
-[debug] :: resolution report :: resolve 788ms :: artifacts dl 2ms
+[debug] 	[NOT REQUIRED] jline#jline;2.14.6!jline.jar
+[debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.13.0!scala-compiler.jar
+[debug] 	[NOT REQUIRED] org.scala-lang#scala-reflect;2.13.0!scala-reflect.jar
+[debug] :: resolution report :: resolve 1423ms :: artifacts dl 4ms
 [warn] 	::::::::::::::::::::::::::::::::::::::::::::::
 [warn] 	::          UNRESOLVED DEPENDENCIES         ::
 [warn] 	::::::::::::::::::::::::::::::::::::::::::::::
@@ -302,7 +302,7 @@
 [debug] 	report for default#exercise3_2.13;1.0 plugin produced in C:\dev\Big Data Management\BDM2019\Exercises\Exercise3\target\scala-2.13\resolution-cache\reports\default-exercise3_2.13-plugin.xml
 [debug] 	report for default#exercise3_2.13;1.0 pom produced in C:\dev\Big Data Management\BDM2019\Exercises\Exercise3\target\scala-2.13\resolution-cache\reports\default-exercise3_2.13-pom.xml
 [debug] 	report for default#exercise3_2.13;1.0 scala-tool produced in C:\dev\Big Data Management\BDM2019\Exercises\Exercise3\target\scala-2.13\resolution-cache\reports\default-exercise3_2.13-scala-tool.xml
-[debug] 	resolve done (788ms resolve - 2ms download)
+[debug] 	resolve done (1423ms resolve - 4ms download)
 [warn] 
 [warn] 	Note: Unresolved dependencies path:
 [warn] 		org.scalactic:scalactic_2.13:3.0.5 (C:\dev\Big Data Management\BDM2019\Exercises\Exercise3\build.sbt#L15-16)

@@ -33,7 +33,6 @@ object HuffmanCoding {
     }
   }
 
-
   /*---- Start: Helper functions ----*/
 
   /**
@@ -41,8 +40,13 @@ object HuffmanCoding {
     * @param text : list of characters
     * @return a list of pairs, where each pair is a character and its frequency in the input list
     */
-  def extractCharFrequencies(text: List[Char]):  List[(Char,Int)]= ???
-
+  def extractCharFrequencies(text: List[Char]): List[(Char, Int)] = {
+    //1. map to each char the total frequency of that char in the list = make tuples of (char, frequency of char)
+    //output:  List((A,8), (A,8), (A,8), (A,8), (A,8), (A,8), (A,8), (A,8), (B,3), (B,3), (B,3), (C,1), (D,1), (E,1), (F,1), (G,1), (H,1))
+    //2. distinct: remove duplicates
+    //final output: List((A,8), (B,3), (C,1), (D,1), (E,1), (F,1), (G,1), (H,1))
+    text.map((c: Char) => (c, text.count(_ == c))).distinct
+  }
 
   /**
     * Given a list of pairs of characters and their frequencies, return a list of HuffmanCodingTree nodes for each character
@@ -50,8 +54,12 @@ object HuffmanCoding {
     * @param charFreqs : list of pairs of characters and their frequencies
     * @return list of HuffmanCodingTree nodes, where each node represent a character from the input list
     */
-  def makeTreeLeaves(charFreqs : List[(Char,Int)]): List[HuffmanCodingTree] = ???
-
+  def makeTreeLeaves(charFreqs: List[(Char, Int)]): List[HuffmanCodingTreeLeaf] = {
+    //1. map: pass the charFreqs' tuples to the case class HuffmanCodingTreeLeaf (=generate list of HuffmanCodingNodes)
+    //2. sort the returned list based on weight of leaf (= frequency of character)
+    //it's in ascending order = the head of the list has the smallest weight
+    charFreqs.map(y => HuffmanCodingTreeLeaf(y._1, y._2)).sortBy(x => x.weight)
+  }
 
   /**
     * Given two HuffmanCodingTree nodes, merge their info into one HuffmanCodingTree node
@@ -59,7 +67,10 @@ object HuffmanCoding {
     * @param b : a HuffmanCodingTree node
     * @return a new non-leaf HuffmanCodingTree node
     */
-  def makeNonLeaf(a:HuffmanCodingTree,b:HuffmanCodingTree):HuffmanCodingTree = ???
+  def makeNonLeaf(a: HuffmanCodingTree, b: HuffmanCodingTree): HuffmanCodingTree = {
+    //using map to merge ._1 of the tuples and sum up ._2
+    //But how to I use a and b as inputs in this function?
+  }
 
   /**
     * Insert a HuffmanCodingTree node into a list of HuffmanCodingTree nodes. Make sure that the nodes are in an  ascending ordered in the list

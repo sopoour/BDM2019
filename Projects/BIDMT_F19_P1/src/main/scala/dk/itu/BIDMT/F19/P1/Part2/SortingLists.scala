@@ -37,7 +37,7 @@ object SortingLists {
     */
   def sortListFreq(listOfLists: List[List[Char]]): List[List[Char]] = {
     //1. groupBy: Group my sub-lists by its length
-    //2. toList: Push these grouped sub-lists into a new list
+    //2. toList: Push these grouped sub-lists into a list
     //Evaluation 1+2: List((1,List(List(o))), (2,List(List(d, e), List(d, e), List(m, n))), (3,List(List(a, b, c), List(f, g, h))), (4,List(List(i, j, k, l))))
     //3. map(x=>x._2): Get only the second index (the actual lists without the index number)
     //Evaluation 3: List(List(List(o)), List(List(d, e), List(d, e), List(m, n)), List(List(a, b, c), List(f, g, h)), List(List(i, j, k, l)))
