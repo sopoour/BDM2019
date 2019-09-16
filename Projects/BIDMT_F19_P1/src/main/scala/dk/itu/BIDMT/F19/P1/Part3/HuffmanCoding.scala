@@ -68,8 +68,9 @@ object HuffmanCoding {
     * @return a new non-leaf HuffmanCodingTree node
     */
   def makeNonLeaf(a: HuffmanCodingTree, b: HuffmanCodingTree): HuffmanCodingTree = {
-    //using map to merge ._1 of the tuples and sum up ._2
-    //But how to I use a and b as inputs in this function?
+    //1. merge the chars from b and c to {b,c}
+    //2. sum up the weights
+    HuffmanCodingTreeNonLeaf(a.chars ::: b.chars, a.nodeWeight + b.nodeWeight, a, b)
   }
 
   /**
@@ -80,7 +81,17 @@ object HuffmanCoding {
     * @return a list of HuffmanCodingTree nodes sorted in an ascending order according to their frequencies
     */
 
-  def insertAsc(treeNode : HuffmanCodingTree, listTreeNodes : List[HuffmanCodingTree]):List[HuffmanCodingTree] = ???
+  def insertAsc(treeNode: HuffmanCodingTree, listTreeNodes: List[HuffmanCodingTree]): List[HuffmanCodingTree] = {
+    def insert(x: HuffmanCodingTree, xs: List[HuffmanCodingTree]): List[HuffmanCodingTree] =
+      xs match {
+        case Nil => List(x)
+        case y :: ys =>
+          if (x.nodeWeight <= y.nodeWeight) x :: xs
+          else y :: insert(x, ys)
+      }
+
+    insert(treeNode, listTreeNodes)
+  }
 
 
   /**
