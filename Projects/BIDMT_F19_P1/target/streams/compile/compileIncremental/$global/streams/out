@@ -1,1 +1,33 @@
-[debug] No changes
+[debug] 
+[debug] Initial source changes: 
+[debug] 	removed:Set()
+[debug] 	added: Set()
+[debug] 	modified: Set(C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part3\HuffmanCoding.scala)
+[debug] Invalidated products: Set()
+[debug] External API changes: API Changes: Set()
+[debug] Modified binary dependencies: Set()
+[debug] Initial directly invalidated classes: Set(dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding.HuffmanCodingTree, dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding.HuffmanCodingTreeNonLeaf, dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding, dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding.HuffmanCodingTreeLeaf)
+[debug] 
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set()
+[debug] 	binary dep: Set()
+[debug] 	external source: Set()
+[debug] All initially invalidated classes: Set(dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding.HuffmanCodingTree, dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding.HuffmanCodingTreeNonLeaf, dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding, dk.itu.BIDMT.F19.P1.Part3.HuffmanCoding.HuffmanCodingTreeLeaf)
+[debug] All initially invalidated sources:Set(C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part3\HuffmanCoding.scala)
+[info] Compiling 1 Scala source to C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\target\scala-2.13\classes ...
+[debug] Getting org.scala-sbt:compiler-bridge_2.13:1.2.5:compile for Scala 2.13.0
+[debug] Getting org.scala-sbt:compiler-bridge_2.13:1.2.5:compile for Scala 2.13.0
+[debug] [zinc] Running cached compiler 2aa7e29b for Scala compiler version 2.13.0
+[debug] [zinc] The Scala compiler is invoked with:
+[debug] 	-bootclasspath
+[debug] 	C:\Program Files\Java\jdk1.8.0_221\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_221\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_221\jre\classes;C:\Users\soful\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.13.0.jar
+[debug] 	-classpath
+[debug] 	C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\target\scala-2.13\classes
+[debug] Scala compilation took 3.6934044 s
+[info] Done compiling.
+[debug] New invalidations:
+[debug] 	Set()
+[debug] Initial set of included nodes: Set()
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] 	Set()
+[debug] All newly invalidated classes after taking into account (previously) recompiled classes:Set()

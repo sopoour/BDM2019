@@ -227,9 +227,10 @@ object HuffmanCoding {
     *         Example: using tree in Figure 1, calling decode for List(0 , 1, 0, 1, 1, 1, 0, 1, 1)
     *         the returned value is List( 'a', 'd', 'd')
     */
-  def decode(tree: HuffmanCodingTree, code: List[Int]): List[Char] = {
+  def decode(tree: HuffmanCodingTree, code: List[Int]): List[Char] = code match {
     case Nil => Nil
-    case _ => getCharCode(tree,_)._1 :: decode(tree,_)
+    //extract the first index of the getCharCode tuple (= char) and insert it into my wanted char list
+    case _ :: xs => getCharCode(tree, code)._1 :: decode(tree, xs)
   }
 
 
