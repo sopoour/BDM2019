@@ -4,7 +4,7 @@
 		module="exercise3$sbt_2.12"
 		revision="1.0"
 		status="integration"
-		publication="20190915181325"
+		publication="20190918123620"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>

@@ -89,7 +89,6 @@ object HuffmanCoding {
           if (x.nodeWeight <= y.nodeWeight) x :: xs
           else y :: _insertAsc(x, ys)
       }
-
     _insertAsc(treeNode, listTreeNodes)
   }
 
@@ -105,27 +104,16 @@ object HuffmanCoding {
     * @param treeLeaves list of HuffmanCodingTree nodes
     * @return a HuffmanCodingTree node representing the root of the tree
     */
-  /*def generateTree(treeLeaves: List[HuffmanCodingTree]): HuffmanCodingTree = {
-
-  }
-   */
-  def generateTree(treeLeaves: List[HuffmanCodingTree]): HuffmanCodingTree = {
-    if (treeLeaves.length < 2) generateTree(treeLeaves)
-    else {
-      val forkNode = makeNonLeaf(treeLeaves.head, treeLeaves.tail.head)
-      val newTrees = treeLeaves.drop(2)
-      _generateTree(forkNode, newTrees)
-    }
-
-    def _generateTree(forkNode: HuffmanCodingTreeNonLeaf, bigTrees: List[HuffmanCodingTree]): List[HuffmanCodingTree] = {
-      if (forkNode.nodeWeight < bigTrees.head.nodeWeight) {
-        val newTree = forkNode :: bigTrees
-        newTree
-      } else {
-        val newTree = bigTrees.head :: _generateTree(forkNode, bigTrees.tail)
-        newTree
-      }
-    }
+  def generateTree(treeLeaves: List[HuffmanCodingTree]): HuffmanCodingTree = treeLeaves match {
+    //If empty list throw me an error
+    case Nil => throw new Error("empty")
+    // if just one node and nothing else (Nil) then return that node
+    case x :: Nil => x
+    // if I have two nodes which are aimed to be merged (x, y) and another node (z)
+    //1. Make out of these two elements (x, y) and z a NonLeaf => makeNonLeaf
+    //2a. This node (nonLeaf) is then added back into the remaining elements of treeLeaves (wrapped in generateTree)
+    //2b. It is inserted at a position such that the ordering by weights is preserved (insertAsc())
+    case x :: y :: z => generateTree(insertAsc(makeNonLeaf(x, y), z))
   }
 
 
@@ -145,8 +133,10 @@ object HuffmanCoding {
     * @return the root node of the Huffman Tree
     */
 
-  def createHuffmanTree(text: List[Char]):HuffmanCodingTree = ???
-
+  def createHuffmanTree(text: List[Char]): HuffmanCodingTree = {
+    //create tree (generateTree) out of the tree leaves (makeTreeLeaves) which have the frequencies extracted (extractFrequencies)
+    generateTree(makeTreeLeaves(extractCharFrequencies(text)))
+  }
 
   /*---- Encoding a message ----*/
 
@@ -161,8 +151,19 @@ object HuffmanCoding {
     * @param c : a character to find its code in the tree
     * @return : a list of 1s and 0s representing the code of the input character in the Huffman tree
     */
-  def encodeChar(tree: HuffmanCodingTree, c:Char): List[Int] = ???
-
+  def encodeChar(tree: HuffmanCodingTree, c: Char): List[Int] = tree match {
+    //in case my tree matches only leaves (C1, B1 etc) then print me an empty list (basically the root of the tree)
+    case t: HuffmanCodingTreeLeaf => List()
+    case t: HuffmanCodingTreeNonLeaf =>
+      //check if there is a char on the left side, if so then insert a 0 for the left char in my encodeChar list
+      if (t.left.chars.contains(c))
+        0 :: encodeChar(t.left, c)
+      // otherwise insert a 1 for a right char
+      else
+        1 :: encodeChar(t.right, c)
+    //case HuffmanCodingTreeNonLeaf(_,_, left, right) if left.chars.contains(c) => 0 :: encodeChar(left, c)
+    //case HuffmanCodingTreeNonLeaf(_,_, left, right) => 1 :: encodeChar(right, c)
+  }
 
   /**
     * Given the root of a HuffmanCodingTree and a string represented as a list of characters, generate the code for
@@ -172,8 +173,12 @@ object HuffmanCoding {
     * @param message : a string represented as a list of characters
     * @return : list of 1s and 0s representing the code for all the characters in the input message
     */
-  def encode(tree: HuffmanCodingTree, message: List[Char]): List[Int] = ???
-
+  def encode(tree: HuffmanCodingTree, message: List[Char]): List[Int] = message match {
+    case Nil => Nil
+    // in any other case, append the encoded char list for each letter to the encode list
+    // until I have a whole list of 0s & 1s
+    case x :: xs => encodeChar(tree, x) ::: encode(tree, xs)
+  }
 
   /*---- Decoding a code into a message ----*/
 
@@ -189,7 +194,26 @@ object HuffmanCoding {
     *         Example: using tree in Figure 1, calling getCharCode for List(0 , 1, 0, 1, 1, 1, 0, 1, 1)
     *         the returned value is the pair ('a' , List( 1, 0, 1, 1, 1, 0, 1, 1))
     */
-  def getCharCode(tree:HuffmanCodingTree , code: List[Int]): (Char, List[Int]) = ???
+  def getCharCode(tree: HuffmanCodingTree, code: List[Int]): (Char, List[Int]) = tree match {
+    //cases are going from root to the top of the tree
+    // Two cases: Leaf (=Root/end of the tree) and Non-Leaf
+    //Case 1: Leaf
+    case HuffmanCodingTreeLeaf(c, _) =>
+      //if there is no code then return just the char and empty list
+      if (code.isEmpty)
+        (c, List())
+      //otherwise print the char and the code list
+      else
+        (c, code)
+    //Case 2: Non-Leaf
+    case t: HuffmanCodingTreeNonLeaf  =>
+      //if the head of the code is 0 then return the left node of the tree for char and the remaining code
+      if (code.head == 0)
+        getCharCode(t.left, code.tail)
+      //otherwise (code.head == 1) return the right node of the tree for char and the remaining code
+      else
+        getCharCode(t.right, code.tail)
+  }
 
   /**
     * Given the root of a HuffmanCodingTree and a list of 1s and 0s representing the code for a message, decode that code
@@ -203,7 +227,10 @@ object HuffmanCoding {
     *         Example: using tree in Figure 1, calling decode for List(0 , 1, 0, 1, 1, 1, 0, 1, 1)
     *         the returned value is List( 'a', 'd', 'd')
     */
-  def decode(tree: HuffmanCodingTree, code: List[Int]): List[Char] = ???
+  def decode(tree: HuffmanCodingTree, code: List[Int]): List[Char] = {
+    case Nil => Nil
+    case _ => getCharCode(tree,_)._1 :: decode(tree,_)
+  }
 
 
 
@@ -220,5 +247,6 @@ object HuffmanCoding {
     //test decoding a code into its corresponding message
     val decodedMsg = decode(tree, List(0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0))
     println("decoding of the above msg: "+ decodedMsg)
+
   }
 }
