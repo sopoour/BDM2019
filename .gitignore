@@ -1,2 +1,15 @@
 *.class
 *.log
+.DS_Store
+
+*.idea/
+
+Exercises/*/.idea/
+Exercises/*/project/*/
+Exercises/*/target
+Exercises/.metals
+
+Projects/*/.idea/
+Projects/*/project/*/
+Projects/*/target
+Projects/.metals

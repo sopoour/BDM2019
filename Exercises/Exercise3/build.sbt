@@ -12,6 +12,6 @@ scalaVersion := "2.13.0"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.8"
 
 mainClass in (Compile, run) := Some("dk.itu.BIDMT.binarytree")
