@@ -230,6 +230,7 @@ object HuffmanCoding {
   def decode(tree: HuffmanCodingTree, code: List[Int]): List[Char] = code match {
     case Nil => Nil
     //extract the first index of the getCharCode tuple (= char) and insert it into my wanted char list
+    //need to add the "xs" as a stop otherwise the loop is endless!!
     case _ :: xs => getCharCode(tree, code)._1 :: decode(tree, xs)
   }
 
