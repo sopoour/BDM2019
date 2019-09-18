@@ -82,15 +82,15 @@ object HuffmanCoding {
     */
 
   def insertAsc(treeNode: HuffmanCodingTree, listTreeNodes: List[HuffmanCodingTree]): List[HuffmanCodingTree] = {
-    def insert(x: HuffmanCodingTree, xs: List[HuffmanCodingTree]): List[HuffmanCodingTree] =
+    def _insertAsc(x: HuffmanCodingTree, xs: List[HuffmanCodingTree]): List[HuffmanCodingTree] =
       xs match {
         case Nil => List(x)
         case y :: ys =>
           if (x.nodeWeight <= y.nodeWeight) x :: xs
-          else y :: insert(x, ys)
+          else y :: _insertAsc(x, ys)
       }
 
-    insert(treeNode, listTreeNodes)
+    _insertAsc(treeNode, listTreeNodes)
   }
 
 
@@ -105,7 +105,29 @@ object HuffmanCoding {
     * @param treeLeaves list of HuffmanCodingTree nodes
     * @return a HuffmanCodingTree node representing the root of the tree
     */
-  def generateTree(treeLeaves: List[HuffmanCodingTree]): HuffmanCodingTree = ???
+  /*def generateTree(treeLeaves: List[HuffmanCodingTree]): HuffmanCodingTree = {
+
+  }
+   */
+  def generateTree(treeLeaves: List[HuffmanCodingTree]): HuffmanCodingTree = {
+    if (treeLeaves.length < 2) generateTree(treeLeaves)
+    else {
+      val forkNode = makeNonLeaf(treeLeaves.head, treeLeaves.tail.head)
+      val newTrees = treeLeaves.drop(2)
+      _generateTree(forkNode, newTrees)
+    }
+
+    def _generateTree(forkNode: HuffmanCodingTreeNonLeaf, bigTrees: List[HuffmanCodingTree]): List[HuffmanCodingTree] = {
+      if (forkNode.nodeWeight < bigTrees.head.nodeWeight) {
+        val newTree = forkNode :: bigTrees
+        newTree
+      } else {
+        val newTree = bigTrees.head :: _generateTree(forkNode, bigTrees.tail)
+        newTree
+      }
+    }
+  }
+
 
   /*---- End: Helper functions ----*/
 
