@@ -15,6 +15,7 @@ object FlattenNestedList {
     //case 1: if empty list, return empty list
     case Nil => Nil
     //case 2: if head is a list, the elements of the flattened head are prepended to the flattened tail
+    //take out the List (x) and append it to the tail which is flattened too
     case (x: List[Any]) :: xs => flatten(x) ::: flatten(xs)
     //case 3: if head is an element, the element is prepended to the flattened tail
     case x :: xs => x :: flatten(xs)
