@@ -11,9 +11,7 @@ object SortingLists {
     */
   def sortListLength(listOfLists: List[List[Char]]): List[List[Char]] = {
     //sort list from small length to bigger length
-    listOfLists.sortWith {
-      _.length < _.length
-    }
+    listOfLists.sortBy(_.length)
   }
 
   /**

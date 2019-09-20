@@ -81,16 +81,18 @@ object HuffmanCoding {
     * @return a list of HuffmanCodingTree nodes sorted in an ascending order according to their frequencies
     */
 
-  def insertAsc(treeNode: HuffmanCodingTree, listTreeNodes: List[HuffmanCodingTree]): List[HuffmanCodingTree] = {
-    def _insertAsc(x: HuffmanCodingTree, xs: List[HuffmanCodingTree]): List[HuffmanCodingTree] =
-      xs match {
-        case Nil => List(x)
-        case y :: ys =>
-          if (x.nodeWeight <= y.nodeWeight) x :: xs
-          else y :: _insertAsc(x, ys)
-      }
-    _insertAsc(treeNode, listTreeNodes)
+  def insertAsc(treeNode: HuffmanCodingTree, listTreeNodes: List[HuffmanCodingTree]): List[HuffmanCodingTree] = listTreeNodes match {
+    case Nil => List(treeNode)
+    //in case it's a normal list we have two sub-cases:
+    case y :: ys =>
+      //we compare the new node with the existing list of nodes and if its weight is smaller than the head node's in that list we insert it as a new head
+      if (treeNode.nodeWeight <= y.nodeWeight)
+        treeNode :: listTreeNodes
+      //otherwise (=node has bigger weight) keep the existing head and do insertAsc allover again until I reach my if statement
+      else
+        y :: insertAsc(treeNode, ys)
   }
+
 
 
   /**
@@ -110,7 +112,7 @@ object HuffmanCoding {
     // if just one node and nothing else (Nil) then return that node
     case x :: Nil => x
     // if I have two nodes which are aimed to be merged (x, y) and another node (z)
-    //1. Make out of these two elements (x, y) and z a NonLeaf => makeNonLeaf
+    //1. makeNonLeaf: Make out of these two nodes (x, y) a non-leaf
     //2a. This node (nonLeaf) is then added back into the remaining elements of treeLeaves (wrapped in generateTree)
     //2b. It is inserted at a position such that the ordering by weights is preserved (insertAsc())
     case x :: y :: z => generateTree(insertAsc(makeNonLeaf(x, y), z))
