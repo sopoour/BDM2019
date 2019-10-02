@@ -1,6 +1,2 @@
 [debug] Acquiring lock on file C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\project\target\.sbt-compilation-infos\bidmt_f19_p1-compile\.sbt-idea-lock ...
-[error] C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\src\main\scala\dk\itu\BIDMT\F19\P1\Part3\HuffmanCoding.scala:236:13: not found: value :::
-[error]     case ys ::: xs => getCharCode(tree, ys)._1 :: decode(tree, xs)
-[error]             ^
-[error] one error found
 [debug] Releasing lock on file C:\dev\Big Data Management\BDM2019\Projects\BIDMT_F19_P1\project\target\.sbt-compilation-infos\bidmt_f19_p1-compile\.sbt-idea-lock.
