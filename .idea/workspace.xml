@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="24e86e5d-51d7-4ebf-be2b-85774e52af03" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Exercises/Exercise1/src/main/scala/package_name/Program_name.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Exercises/Exercise1/src/main/scala/package_name/Program_name.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projects/BIDMT_F19_P1/src/main/scala/dk/itu/BIDMT/F19/P1/Part1/FlattenNestedList.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P1/src/main/scala/dk/itu/BIDMT/F19/P1/Part1/FlattenNestedList.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/build.sbt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/project/assembly.sbt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/run.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/src/main/resources/application.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/src/main/scala/dk/itu/BIDMT/F19/P2/Part1/AirlineDataAnalysisRDD.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/src/main/scala/dk/itu/BIDMT/F19/P2/Part1/AirlineDataAnalysisSQL.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/src/main/scala/dk/itu/BIDMT/F19/P2/Part1/FlightDelayCancellationInfo.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/src/main/scala/dk/itu/BIDMT/F19/P2/Part2/YelpAnalysis.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exercises/Exercise6/build.sbt" beforeDir="false" afterPath="$PROJECT_DIR$/Exercises/Exercise6/build.sbt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exercises/Exercise6/src/main/scala/dk/itu/BIDMT/SparkDemo.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Exercises/Exercise6/src/main/scala/dk/itu/BIDMT/SparkDemo.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,6 +21,9 @@
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -28,6 +39,7 @@
   </component>
   <component name="ProjectId" id="1QodUOQpA19YXwlOGPFHD96qmic" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
   </component>
@@ -66,23 +78,20 @@
       <updated>1568440897934</updated>
       <workItem from="1568440899489" duration="344000" />
       <workItem from="1570012845994" duration="2000" />
+      <workItem from="1570286229584" duration="128000" />
+      <workItem from="1570617558700" duration="1000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2000" />
+    <option name="totallyTimeSpent" value="131000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Database Changes" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -90,11 +99,17 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="SciView" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Database Changes" order="7" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="11" />
+      <window_info anchor="bottom" id="Docker" order="12" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -105,10 +120,36 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/.git/MERGE_MSG">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
   </component>
 </project>

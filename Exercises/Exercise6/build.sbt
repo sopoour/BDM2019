@@ -1,7 +1,7 @@
 name := "Exercise6"
 
 version := "1.0"
-
+//crucial to have the scalaVersion to 2.11.12 since that's what Spark 2.4.4 uses
 scalaVersion := "2.11.12"
 
 mainClass in (Compile, run) := Some("dk.itu.BIDMT.SparkDemo.Demo")
@@ -22,9 +22,9 @@ cleanupCommands in console := "spark.stop()"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.4" //% "provided"
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.4"  //% "provided"
-libraryDependencies += "org.apache.spark" %% "spark-yarn" % "2.4.4" //% "provided"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.4" % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.4"  % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-yarn" % "2.4.4" % "provided"
 
 assemblyMergeStrategy in assembly := {
   case m if m.toLowerCase.endsWith("manifest.mf")          => MergeStrategy.discard

@@ -1,4 +1,4 @@
-package dk.itu.BIDMT.SparkDemo
+package dk.itu.BIDMT
 
 import org.apache.spark.sql.{Dataset, Encoders, SparkSession, DataFrame, Row}
 import org.apache.spark.sql.functions._
@@ -13,7 +13,7 @@ object Demo {
 
 	val spark: SparkSession = SparkSession.builder
         .appName("MyApp")
-        .master("local") //Remove this line when running in cluster
+        //.master("local") //Remove this line when running in cluster
         .getOrCreate
 
 	spark.sparkContext.setLogLevel("OFF")
