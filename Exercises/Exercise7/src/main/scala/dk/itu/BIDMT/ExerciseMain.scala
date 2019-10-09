@@ -1,8 +1,5 @@
 package dk.itu.BIDMT.ExerciseMain
 
-//import org.apache.spark.sql.{Dataset, Encoders, SparkSession, DataFrame, Row}
-//import org.apache.spark.sql.functions._
-//import org.apache.spark.sql.types._
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.storage.StorageLevel._
@@ -15,18 +12,6 @@ object Main {
         .setMaster("local")
         .setAppName("main")
     val sc = new SparkContext(conf)
-
-	//spark.sparkContext.setLogLevel("OFF")
-    //import spark.implicits._
-
-	//def simulatedDataLoader (spark:SparkSession, path:String):RDD[Row] =  {
-	//	spark
-	//		.read
-    //        .format("csv")
-	//		.option("header","true")
-    //        .option("inferSchema", "true")
-    //        .load(path)
-	//}
 
 	def main(args:Array[String]): Unit = {
         val dataRDD = sc.textFile("data/medium_dataset.csv")
