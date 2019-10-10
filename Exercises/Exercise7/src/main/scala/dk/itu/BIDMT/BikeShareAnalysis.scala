@@ -9,30 +9,42 @@ import org.apache.spark.SparkContext
 /// i.e: 'BikeShareAnalysis.name-of-var/function'
 
 object BikeShareAnalysis {
-  val conf = new SparkConf().setMaster("local").setAppName("Word Count")
+  val conf = new SparkConf().setMaster("local").setAppName("BikeShareDataAnalysis")
   val sc = new SparkContext(conf)
 
-  val dataRDD = sc.textFile("data/metro-bike-share-trips-2019-q1.csv")
+  def dataLoader(filePath: String): RDD[BikeShareData] = {
+    val dataRDD = sc.textFile("data/metro-bike-share-trips-2019-q1.csv")
 
-  val header = dataRDD.first()
+    val header = dataRDD.first()
 
-  val dataRDDNoHeader = dataRDD.filter(row => row != header)
+    val dataRDDNoHeader = dataRDD.filter(row => row != header)
 
-  val  bikeShareDataRDD = dataRDDNoHeader.map(row => BikeShareData(row))
-  
-  //app1: find trips whose duration is greater than 12 hr
-  val longTrips = bikeShareDataRDD...
+    val  bikeShareDataRDD = dataRDDNoHeader.map(row => BikeShareData(row))
+    bikeShareDataRDD
+  }
 
-  val longTripsSortedAsc = longTrips...
 
-  val longTripsSortedDsc = longTrips...
 
-  //app2: projecting on trip_id, duration
-  val tripAndDurationOnly = bikeShareDataRDD...
+  def main(args: Array[String]): Unit = {
+   //Note: make sure that you download the dataset to the below location before you run your application
+    val inputFilePath = "data/metro-bike-share-trips-2019-q1.csv" 
+    //load the data
+    val bikeShareDataRDD = dataLoader(inputFilePath)
 
-  //app3: find number of trips made by each bike
-  val bikeTripsDsc = bikeShareDataRDD...
+    //app1: find trips whose duration is greater than 12 hr
+    val longTrips = ??? //bikeShareDataRDD...
 
-  //app4: find total duration of trips made by each bike
-  val bikeDurationUsed = bikeShareDataRDD...
+    val longTripsSortedAsc = ??? //longTrips...
+
+    val longTripsSortedDsc = ??? //longTrips...
+
+    //app2: projecting on trip_id, duration
+    val tripAndDurationOnly = ??? //bikeShareDataRDD...
+
+    //app3: find number of trips made by each bike
+    val bikeTripsDsc = ??? //bikeShareDataRDD...
+
+    //app4: find total duration of trips made by each bike
+    val bikeDurationUsed = ?? //bikeShareDataRDD...
+  }
 }
