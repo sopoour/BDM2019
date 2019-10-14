@@ -33,18 +33,18 @@ object BikeShareAnalysis {
     //app1: find trips whose duration is greater than 12 hr
 
     //filter RDD based on a given predicate/condition (see above comment)
-    //val longTrips = bikeShareDataRDD.filter(r => r.duration >= 12*60)
+    val longTrips = bikeShareDataRDD.filter(r => r.duration >= 12*60)
 
     //sort in an ascending order based on duration
-    //val longTripsSortedAsc = longTrips.sortBy(r => r.duration)
+    val longTripsSortedAsc = longTrips.sortBy(r => r.duration)
 
     //sort in descending order based on duration
-    //val longTripsSortedDsc = longTrips.sortBy(r => r.duration, false)
+    val longTripsSortedDsc = longTrips.sortBy(r => r.duration, false)
 
     //app2: projecting on trip_id, duration
 
     //selecting on specific columns (here: trip id and duration)
-    //val tripAndDurationOnly = bikeShareDataRDD.map(r => (r.trip_id, r.duration))
+    val tripAndDurationOnly = bikeShareDataRDD.map(r => (r.trip_id, r.duration))
 
     //app3: find number of trips made by each bike
 
