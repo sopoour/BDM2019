@@ -15,26 +15,35 @@ object WordCountRDD {
     val sc = new SparkContext(conf)
 
     def main(args: Array[String]): Unit = {
-        //load the data
-        val fileText = sc.textFile(path="data/pg1597")
+      //load the data
+      val inputFilePath = "data/pg1597.txt"
+      val inputRDD = sc.textFile(inputFilePath)
 
-        //split data into words
-        val words = fileText.flatMap(x => x.split("\\s+"))
-        //first possibility
-        val out1 = words.map(x=> (x,1)).reduceByKey(_+_)
+      // split the text read from file into words
+      val wordsRDD = inputRDD.flatMap(line => line.split(" "))
 
-        //second possibility
-        //group by elements what we have in input RDD
-        val out2: RDD[(String, Iterable[String])]= words.groupBy(x=>x).map(r => (r._1, r._2.size))
+      //split data into words, transform into word and count and reduce
+      //flatMap: create an array of separated words
+      //map: makes tuples of words and starts with 1
+      //reduceByKey: CHECK what it does! --> counter probably
+      val countsRDD = wordsRDD.map(word =>(word,1)).reduceByKey(_+_)
+
+      //write an action here to start executing your code
+      countsRDD.saveAsTextFile("data/output")
+
+      //stop spark
+      sc.stop()
     }
-    val inputRDD = sc.textFile("/home/userid/input/*")
-    //split data into words, transform into word and count and reduce
-    //flatMap: create an array of separated words
-    //map: makes tuples of words and starts with 1
-    //reduceByKey: CHECK what it does! --> counter probably
-    val countsRDD = inputRDD.flatMap(line => line.split(" "))
-      .map(word =>(word,1))
-      .reduceByKey(_+_)
+  /*
+    //load the data
+      val fileText = sc.textFile(path="data/pg1597")
 
-    countsRDD.saveAsTextFile("/home/userid/output")
+      //split data into words
+      val words = fileText.flatMap(x => x.split("\\s+"))
+      //first possibility
+      val out1 = words.map(x=> (x,1)).reduceByKey(_+_)
+
+      //second possibility
+      //group by elements what we have in input RDD
+      val out2 = words.groupBy(x=>x).map(r => (r._1, r._2.size))*/
 }
