@@ -12,21 +12,21 @@ object Main {
     val sc = new SparkContext(conf)
 
 	def main(args:Array[String]): Unit = {
-        val dataRDD = sc.textFile("data/medium_dataset.csv")
-        val header = dataRDD.first()
-        val dataRDDNoHeader = dataRDD.filter(row => row != header)
+    val dataRDD = sc.textFile("data/medium_dataset.csv")
+    val header = dataRDD.first()
+    val dataRDDNoHeader = dataRDD.filter(row => row != header)
       println(header)
 
-        // Print the first 20 elements in the RDD
+    // Print the first 20 elements in the RDD
       dataRDDNoHeader.take(20).map(println)
       //also possible to write: dataRDDNoHeader.take(20).foreach(println)
 
-        // Count the number of elements
-        val count = dataRDDNoHeader.count()
+    // Count the number of elements
+    val count = dataRDDNoHeader.count()
       println("Number of elements: " + count)
 
-        // Filter based on X and count
-        val first = dataRDDNoHeader.map(_.split(", ")).map(c => c(1))
+    // Filter based on X and count
+    val first = dataRDDNoHeader.map(_.split(", ")).map(c => c(1))
       val firstContains = first.filter(s => s.contains("X"))
       println("First counts X: " + firstContains.count())
 
