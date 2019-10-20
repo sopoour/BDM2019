@@ -29,6 +29,7 @@ object BikeShareAnalysis {
     val inputFilePath = "data/metro-bike-share-trips-2019-q1.csv"
     //load the data
     val bikeShareDataRDD = dataLoader(inputFilePath)
+    bikeShareDataRDD.take(10).map(println)
 
     //app1: find trips whose duration is greater than 12 hr
 
@@ -56,8 +57,8 @@ object BikeShareAnalysis {
     //map RDDs with bike_id and duration then finally reduce all of that to one tuple with the sum of duration for each ID
     //val bikeDurationUsed = bikeShareDataRDD.map(r => (r.bike_id, r.duration)).reduceByKey(_+_)
 
-    bikeTripsDsc.saveAsTextFile("data/output-bike")
+    //bikeTripsDsc.saveAsTextFile("data/output-bike")
 
-    sc.stop()
+    //sc.stop()
   }
 }
