@@ -14,6 +14,7 @@ object AirlineDataAnalysisRDD {
   //create a spark context
   val conf: SparkConf = new SparkConf()
     .setAppName("AirlineDataAnalysisRDD")
+    //run on 4 nodes --> have 4 partitioning files
     .setMaster("local[4]") //comment before you create the jar file to be run on the cluster
 
   val sc: SparkContext = new SparkContext(conf)
@@ -54,7 +55,9 @@ object AirlineDataAnalysisRDD {
     */
     //QUESTION: what is an alternative to count() --> count() has a Long output so that we need toInt, better method?
   def flightCancellationsForCarrier(carrier: String, airlineCancellationsRDD : RDD[FlightDelayCancellationInfo]) : Int = {
-    airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier).map(x => x.CANCELLED == "1.0").count().toInt
+    //airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier).map(x => x.CANCELLED == "1.0").count().toInt
+    //we have to filter after both. Somehow we mapped it only so that it just counted all my flights and not the cancelled only
+    airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier && x.CANCELLED == "1.0").count().toInt
   }
 
   /**
@@ -87,7 +90,6 @@ object AirlineDataAnalysisRDD {
    */
  def generateIndexOfCancellations(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo] ,
                                   carriers : List[String]) : RDD[(String,Iterable[FlightDelayCancellationInfo])] = {
-
    airlineCancellationsRDD.filter(x => x.CANCELLED == "1.0").groupBy(x => x.OP_CARRIER)
  }
 
@@ -159,8 +161,8 @@ object AirlineDataAnalysisRDD {
     val count = airlineDataRDD.filter(x => x.OP_CARRIER == "MQ").map(x => x.CANCELLED == "1.0").count().toInt
     //println("Counted: " + count)
 
-    val carriers = List("FL", "OO", "UA", "MQ", "US", "XE", "F9", "YV", "HA", "OH", "NW", "EV", "WN")
-    val turples = carriers.map(c => (c, flightCancellationsForCarrier(c, airlineDataRDD))).sortWith(_._2 > _._2)
+   // val carriers = List("FL", "OO", "UA", "MQ", "US", "XE", "F9", "YV", "HA", "OH", "NW", "EV", "WN")
+    //val turples = carriers.map(c => (c, flightCancellationsForCarrier(c, airlineDataRDD))).sortWith(_._2 > _._2)
     //println("Turples: " + turples)
 
     //airlineDataRDD.filter(x => x.CANCELLED == "1.0").groupBy(x => x.OP_CARRIER).take(10).map(println)
