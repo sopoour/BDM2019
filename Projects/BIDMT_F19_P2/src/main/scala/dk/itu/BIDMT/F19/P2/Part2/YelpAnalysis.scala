@@ -194,7 +194,7 @@ object YelpAnalysis {
           case 1 => {
             yelpBusiness.createTempView("yelpBusinessView")
             yelpReviews.createTempView("yelpReviewsView")
-            influencerUsersDF.createTempView("influencerUsersDFView")
+            influencerUsersDF.createTempView("influencerUsersView")
             val businessesReviewedByInfluencersSQL = findFamousBusinessesSQL()
             businessesReviewedByInfluencersSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q4_SQL")
           }
