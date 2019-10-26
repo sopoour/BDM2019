@@ -44,7 +44,7 @@ object YelpAnalysis {
     yelpBusinesses.agg(sum("review_count"))
   }
 
-  /*
+
    //Q2:
    /**
      * use SQL statements: find all businesses in yelpBusinesses
@@ -52,7 +52,17 @@ object YelpAnalysis {
      *
      * @return a Dataframe of (name, stars, review_count) of five star most reviewed businesses
      */
-   def fiveStarBusinessesSQL():DataFrame = ???
+     //SOPHIA: In der Beschreibung stet dass es mind. 1000 review_count sein soll was aber keinen Sinn macht weil
+     //es keine gibt mit 1000. Habe bereits ins Forum in LearnIT geschriebn und diesbzgl gefragt. Habe es jetzt mal mit 10 ausprobiert
+   def fiveStarBusinessesSQL():DataFrame = {
+     spark.sql("""
+         select `name`, `stars`, `review_count`
+         from yelpBusinessesView
+         where stars = 5.0
+         and review_count >=10
+         """)
+   }
+
 
    /**
      * use DataFrame transformations: find all businesses in yelpBusinesses
@@ -60,9 +70,14 @@ object YelpAnalysis {
      * @param yelpBusinesses
      * @return a Dataframe of (name, stars, review_count) of five star most reviewed businesses
      */
-   def fiveStarBusinessesDF(yelpBusinesses: DataFrame):DataFrame = ???
+   def fiveStarBusinessesDF(yelpBusinesses: DataFrame):DataFrame = {
+     yelpBusinesses
+       .select("name", "stars", "review_count")
+       .filter("stars = 5.0" )
+       .filter("review_count >= 10")
+   }
 
-
+  /*
    //Q3:
    /**
      * use SQL statements: find the influencer users in yelpUsers who have written more than 1000 reviews
@@ -158,12 +173,12 @@ object YelpAnalysis {
         implSelection match{
           case 1 => {
             yelpBusiness.createTempView("yelpBusinessesView")
-           // val topBusinessesSQL = fiveStarBusinessesSQL()
-            //topBusinessesSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q2_SQL")
+            val topBusinessesSQL = fiveStarBusinessesSQL()
+            topBusinessesSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q2_SQL")
           }
           case 2 => {
-            //val topBusinessesDF = fiveStarBusinessesDF(yelpBusiness)
-            //topBusinessesDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q2_DF")
+            val topBusinessesDF = fiveStarBusinessesDF(yelpBusiness)
+            topBusinessesDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q2_DF")
           }
           case _ => println("YelpAnalysis: invalid implementation type, valid types 1 = SQL, 2 = DF")
         }
@@ -254,13 +269,14 @@ object YelpAnalysis {
 
         val totalReviewsPerBusinessDF = totalReviewsbDF(yelpBusiness)
         totalReviewsPerBusinessDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q1_DF")
-        /*
+
         //Q2
         val topBusinessesSQL = fiveStarBusinessesSQL()
         topBusinessesSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q2_SQL")
+
         val topBusinessesDF = fiveStarBusinessesDF(yelpBusiness)
         topBusinessesDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q2_DF")
-
+        /*
         //Q3
         val influencerUsersSQL = findInfluencerUserSQL()
         influencerUsersSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q3_SQL")
