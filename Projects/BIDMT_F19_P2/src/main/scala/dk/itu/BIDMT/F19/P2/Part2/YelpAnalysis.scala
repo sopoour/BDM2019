@@ -59,7 +59,7 @@ object YelpAnalysis {
          select `name`, `stars`, `review_count`
          from yelpBusinessesView
          where stars = 5.0
-         and review_count >=10
+         and review_count >=1000
          """)
    }
 
@@ -74,7 +74,7 @@ object YelpAnalysis {
      yelpBusinesses
        .select("name", "stars", "review_count")
        .filter("stars = 5.0" )
-       .filter("review_count >= 10")
+       .filter("review_count >= 1000")
    }
 
   /*
