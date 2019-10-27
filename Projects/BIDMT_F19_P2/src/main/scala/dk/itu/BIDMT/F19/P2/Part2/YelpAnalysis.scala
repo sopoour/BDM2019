@@ -112,14 +112,35 @@ object YelpAnalysis {
       //SOPHIA: Mein Ansatz der aber bis jetzt nicht funktioniert, weiss net was falsch ist!
     def findFamousBusinessesSQL() : DataFrame = {
       spark.sql("""
+         SELECT `business_id`, `name`, COUNT(DISTINCT `user_id`) as count
+         FROM yelpReviewsView yrv
+         INNER JOIN influencerUsersView iuv
+         ON yrv.user_id = iuv.user_id
+         INNER JOIN yelpBusinessView ybv
+         ON yrv.business_id = ybv.business_id
+         GROUP BY business_id, name
+         HAVING count > 5
+        """)
+    }
+
+/*  spark.sql("""
           select `name`
           from yelpBusinessView
           where SUM(`business_id`) > 5 IN
             (select `business_id`
             from yelpReviewsView)
-          """)
-    }
+          """)*/
 
+ /* SELECT `business_id`, `name`, COUNT(DISTINCT `user_id`) as count
+  FROM yelpReviews yr
+  INNER JOIN (select `user_id`
+    from yelpUsersView
+    where review_count >= 1000) yiv
+  ON yr.user_id = yiv.user_id
+  LEFT JOIN yelpBusinesses yb
+    ON yr.business__id=yb.business__id
+  GROUP BY `business_id`, `name`
+  HAVING count > 5*/
     /*
     /**
       * use DataFrame transformations: find the businesses in yelpBusinesses  that have appeared in reviews in yelpReviews by more than 5 influencer users
