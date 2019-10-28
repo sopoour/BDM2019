@@ -112,15 +112,17 @@ object YelpAnalysis {
       //SOPHIA: Mein Ansatz der aber bis jetzt nicht funktioniert, weiss net was falsch ist!
     def findFamousBusinessesSQL() : DataFrame = {
       spark.sql("""
-         SELECT `business_id`, `name`, COUNT(DISTINCT `user_id`) as count
-         FROM yelpReviewsView yrv
-         INNER JOIN influencerUsersView iuv
-         ON yrv.user_id = iuv.user_id
-         INNER JOIN yelpBusinessView ybv
-         ON yrv.business_id = ybv.business_id
-         GROUP BY business_id, name
-         HAVING count > 5
-        """)
+             SELECT yrv.business_id,
+             ybv.name,
+             COUNT(DISTINCT iuv.user_id) as count
+             FROM yelpReviewsView AS yrv
+             INNER JOIN influencerUsersView AS iuv
+             ON yrv.user_id = iuv.user_id
+             INNER JOIN yelpBusinessesView AS ybv
+             ON yrv.business_id = ybv.business_id
+             GROUP BY yrv.business_id, ybv.name
+             HAVING count > 5
+            """)
     }
 
 /*  spark.sql("""
@@ -141,7 +143,7 @@ object YelpAnalysis {
     ON yr.business__id=yb.business__id
   GROUP BY `business_id`, `name`
   HAVING count > 5*/
-    /*
+
     /**
       * use DataFrame transformations: find the businesses in yelpBusinesses  that have appeared in reviews in yelpReviews by more than 5 influencer users
       * sort the result in a descending order according to the count of reviews
@@ -151,31 +153,58 @@ object YelpAnalysis {
       * @param influencerUsersDF
       * @return DataFrame of names of businesses that match the criteria
       */
-    def findFamousBusinessesDF(yelpBusinesses: DataFrame, yelpReviews: DataFrame, influencerUsersDF: DataFrame): DataFrame = ???
+/*
+    def findFamousBusinessesDF(yelpBusinesses: DataFrame, yelpReviews: DataFrame, influencerUsersDF: DataFrame): DataFrame = {
+      influencerUsersDF.join(yelpReviews, influencerUsersDF("user_id") === yelpReviews("user_id"))
+        .join(yelpBusinesses, yelpBusinesses("business_id") === yelpReviews("business_id"))
+        .groupBy(yelpBusinesses("business_id")
+        .count("user_id")
+        .filter("`count`" > 5")
+        .select(yelpBusinesses("name"))
 
-    //Q5:
-    /**
-      * use SQL statements: find a descendingly ordered list of users based on  the average star counts given by each of them
-      * in all the reviews that they have written
-      *
-      * You need to average the stars given by each user in reviews that appear in yelpReviews and then sort them
-      *
-      * @return DataFrame of (user names and average stars)
-      */
-    def findavgStarsByUserSQL():DataFrame = ???
+    }
+    */
 
-    /**
-      * use DataFrame transformations: find a descendingly ordered list of users based on the average star counts given by each of them
-      * in all the reviews that they have written in yelpReviews
-      *
-      * You need to average the stars given by each user in reviews that appear in yelpReviews and then sort them
-      *
-      * @param yelpReviews
-      * @param yelpUsers
-      * @return DataFrame of (user names and average stars)
-      */
-    def findavgStarsByUserDF(yelpReviews: DataFrame, yelpUsers: DataFrame):DataFrame = ???
-  */
+
+
+  //Q5:
+  /**
+    * use SQL statements: find a descendingly ordered list of users based on  the average star counts given by each of them
+    * in all the reviews that they have written
+    *
+    * You need to average the stars given by each user in reviews that appear in yelpReviews and then sort them
+    *
+    * @return DataFrame of (user names and average stars)
+    */
+  def findavgStarsByUserSQL():DataFrame = {
+    spark.sql("""
+             SELECT yuv.name,
+             AVG(yrv.stars) AS avgstars
+             FROM yelpUsersView AS yuv
+             INNER JOIN yelpReviewsView AS yrv
+             ON yuv.user_id = yrv.user_id
+             GROUP BY yrv.user_id, yuv.name
+             ORDER BY avgstars desc
+    """)
+  }
+  /*
+
+    * use DataFrame transformations: find a descendingly ordered list of users based on the average star counts given by each of them
+    * in all the reviews that they have written in yelpReviews
+    *
+    * You need to average the stars given by each user in reviews that appear in yelpReviews and then sort them
+    *
+    * @param yelpReviews
+    * @param yelpUsers
+    * @return DataFrame of (user names and average stars)
+    */
+  def findavgStarsByUserDF(yelpReviews: DataFrame, yelpUsers: DataFrame):DataFrame ={
+    yelpUsers.join(yelpReviews, yelpUsers("user_id")===yelpReviews("user_id"))
+      .groupBy(yelpReviews("user_id"), yelpUsers("name"))
+      .agg(avg("stars").as("Average"))
+      .sort(desc("Average"))
+  }
+
 
   //calls the required function to be executed
   def runYelpAnalysisQuery(yelpReviewsFilePath : String, yelpBusinessFilePath : String,
@@ -255,7 +284,7 @@ object YelpAnalysis {
 
         implSelection match{
           case 1 => {
-            yelpBusiness.createTempView("yelpBusinessView")
+            yelpBusiness.createTempView("yelpBusinessesView")
             yelpReviews.createTempView("yelpReviewsView")
             influencerUsersDF.createTempView("influencerUsersView")
             val businessesReviewedByInfluencersSQL = findFamousBusinessesSQL()
@@ -282,12 +311,12 @@ object YelpAnalysis {
             yelpReviews.createTempView("yelpReviewsView")
             yelpUsers.createTempView("yelpUsersView")
 
-            //val avgStarsByUserSQL = findavgStarsByUserSQL()
-            //avgStarsByUserSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q5_SQL")
+            val avgStarsByUserSQL = findavgStarsByUserSQL()
+            avgStarsByUserSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q5_SQL")
           }
           case 2 => {
-            //val avgStarsByUserDF = findavgStarsByUserDF(yelpReviews, yelpUsers)
-            //avgStarsByUserDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q5_DF")
+            val avgStarsByUserDF = findavgStarsByUserDF(yelpReviews, yelpUsers)
+            avgStarsByUserDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q5_DF")
           }
           case _ => println("YelpAnalysis: invalid implementation type, valid types 1 = SQL, 2 = DF")
         }
@@ -331,14 +360,14 @@ object YelpAnalysis {
         /*
         val businessesReviewedByInfluencersDF = findFamousBusinessesDF(yelpBusiness, yelpReviews, influencerUsersDF)
         businessesReviewedByInfluencersDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q4_DF")
-
+        */
         //Q5
         val avgStarsByUserSQL = findavgStarsByUserSQL()
         avgStarsByUserSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q5_SQL")
+
         val avgStarsByUserDF = findavgStarsByUserDF(yelpReviews, yelpUsers)
         avgStarsByUserDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q5_DF")
 
-         */
       }
       case _ => println("YelpAnalysis: invalid query num, valid query numbers 1-5")
     }
