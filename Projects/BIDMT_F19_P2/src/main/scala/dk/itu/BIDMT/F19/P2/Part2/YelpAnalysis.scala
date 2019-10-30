@@ -112,37 +112,17 @@ object YelpAnalysis {
       //SOPHIA: Mein Ansatz der aber bis jetzt nicht funktioniert, weiss net was falsch ist!
     def findFamousBusinessesSQL() : DataFrame = {
       spark.sql("""
-             SELECT yrv.business_id,
-             ybv.name,
-             COUNT(DISTINCT iuv.user_id) as count
+             SELECT ybv.name
              FROM yelpReviewsView AS yrv
              INNER JOIN influencerUsersView AS iuv
              ON yrv.user_id = iuv.user_id
              INNER JOIN yelpBusinessesView AS ybv
              ON yrv.business_id = ybv.business_id
              GROUP BY yrv.business_id, ybv.name
-             HAVING count > 5
+             HAVING count(*) > 5
             """)
     }
 
-/*  spark.sql("""
-          select `name`
-          from yelpBusinessView
-          where SUM(`business_id`) > 5 IN
-            (select `business_id`
-            from yelpReviewsView)
-          """)*/
-
- /* SELECT `business_id`, `name`, COUNT(DISTINCT `user_id`) as count
-  FROM yelpReviews yr
-  INNER JOIN (select `user_id`
-    from yelpUsersView
-    where review_count >= 1000) yiv
-  ON yr.user_id = yiv.user_id
-  LEFT JOIN yelpBusinesses yb
-    ON yr.business__id=yb.business__id
-  GROUP BY `business_id`, `name`
-  HAVING count > 5*/
 
     /**
       * use DataFrame transformations: find the businesses in yelpBusinesses  that have appeared in reviews in yelpReviews by more than 5 influencer users
@@ -153,17 +133,17 @@ object YelpAnalysis {
       * @param influencerUsersDF
       * @return DataFrame of names of businesses that match the criteria
       */
-/*
+
     def findFamousBusinessesDF(yelpBusinesses: DataFrame, yelpReviews: DataFrame, influencerUsersDF: DataFrame): DataFrame = {
       influencerUsersDF.join(yelpReviews, influencerUsersDF("user_id") === yelpReviews("user_id"))
         .join(yelpBusinesses, yelpBusinesses("business_id") === yelpReviews("business_id"))
-        .groupBy(yelpBusinesses("business_id")
-        .count("user_id")
-        .filter("`count`" > 5")
+        .groupBy(yelpBusinesses("business_id"), yelpBusinesses("name"))
+        .agg(count("*"))
+        .filter("count(1) > 5")
         .select(yelpBusinesses("name"))
 
     }
-    */
+
 
 
 
@@ -203,6 +183,7 @@ object YelpAnalysis {
       .groupBy(yelpReviews("user_id"), yelpUsers("name"))
       .agg(avg("stars").as("Average"))
       .sort(desc("Average"))
+      .select("name", "Average")
   }
 
 
@@ -291,8 +272,8 @@ object YelpAnalysis {
             businessesReviewedByInfluencersSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q4_SQL")
           }
           case 2 => {
-            //val businessesReviewedByInfluencersDF = findFamousBusinessesDF(yelpBusiness, yelpReviews, influencerUsersDF)
-            //businessesReviewedByInfluencersDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q4_DF")
+            val businessesReviewedByInfluencersDF = findFamousBusinessesDF(yelpBusiness, yelpReviews, influencerUsersDF)
+            businessesReviewedByInfluencersDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q4_DF")
           }
           case _ => println("YelpAnalysis: invalid implementation type, valid types 1 = SQL, 2 = DF")
 
@@ -357,10 +338,10 @@ object YelpAnalysis {
         influencerUsersSQL.createTempView("influencerUsersView")
         val businessesReviewedByInfluencersSQL = findFamousBusinessesSQL()
         businessesReviewedByInfluencersSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q4_SQL")
-        /*
+
         val businessesReviewedByInfluencersDF = findFamousBusinessesDF(yelpBusiness, yelpReviews, influencerUsersDF)
         businessesReviewedByInfluencersDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q4_DF")
-        */
+
         //Q5
         val avgStarsByUserSQL = findavgStarsByUserSQL()
         avgStarsByUserSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q5_SQL")
