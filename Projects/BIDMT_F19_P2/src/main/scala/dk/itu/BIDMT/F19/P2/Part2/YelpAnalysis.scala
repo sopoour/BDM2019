@@ -56,10 +56,10 @@ object YelpAnalysis {
      //es keine gibt mit 1000. Habe bereits ins Forum in LearnIT geschriebn und diesbzgl gefragt. Habe es jetzt mal mit 10 ausprobiert
    def fiveStarBusinessesSQL():DataFrame = {
      spark.sql("""
-         select `name`, `stars`, `review_count`
-         from yelpBusinessesView
-         where stars = 5.0
-         and review_count >=1000
+         SELECT name, stars, review_count
+         FROM yelpBusinessesView
+         WHERE stars = 5.0
+         AND review_count >=1000
          """)
    }
 
@@ -85,9 +85,9 @@ object YelpAnalysis {
      */
    def findInfluencerUserSQL():DataFrame = {
      spark.sql("""
-         select `user_id`
-         from yelpUsersView
-         where review_count >= 1000
+         SELECT user_id
+         FROM yelpUsersView
+         WHERE review_count >= 1000
          """)
    }
 
@@ -120,6 +120,7 @@ object YelpAnalysis {
              ON yrv.business_id = ybv.business_id
              GROUP BY yrv.business_id, ybv.name
              HAVING count(*) > 5
+             ORDER BY COUNT(*) DESC // ASK
             """)
     }
 
@@ -135,7 +136,8 @@ object YelpAnalysis {
       */
 
     def findFamousBusinessesDF(yelpBusinesses: DataFrame, yelpReviews: DataFrame, influencerUsersDF: DataFrame): DataFrame = {
-      influencerUsersDF.join(yelpReviews, influencerUsersDF("user_id") === yelpReviews("user_id"))
+      influencerUsersDF
+        .join(yelpReviews, influencerUsersDF("user_id") === yelpReviews("user_id"))
         .join(yelpBusinesses, yelpBusinesses("business_id") === yelpReviews("business_id"))
         .groupBy(yelpBusinesses("business_id"), yelpBusinesses("name"))
         .agg(count("*"))
@@ -158,8 +160,7 @@ object YelpAnalysis {
     */
   def findavgStarsByUserSQL():DataFrame = {
     spark.sql("""
-             SELECT yuv.name,
-             AVG(yrv.stars) AS avgstars
+             SELECT yuv.name, AVG(yrv.stars) AS avgstars
              FROM yelpUsersView AS yuv
              INNER JOIN yelpReviewsView AS yrv
              ON yuv.user_id = yrv.user_id
@@ -179,7 +180,8 @@ object YelpAnalysis {
     * @return DataFrame of (user names and average stars)
     */
   def findavgStarsByUserDF(yelpReviews: DataFrame, yelpUsers: DataFrame):DataFrame ={
-    yelpUsers.join(yelpReviews, yelpUsers("user_id")===yelpReviews("user_id"))
+    yelpUsers
+      .join(yelpReviews, yelpUsers("user_id")===yelpReviews("user_id"))
       .groupBy(yelpReviews("user_id"), yelpUsers("name"))
       .agg(avg("stars").as("Average"))
       .sort(desc("Average"))
