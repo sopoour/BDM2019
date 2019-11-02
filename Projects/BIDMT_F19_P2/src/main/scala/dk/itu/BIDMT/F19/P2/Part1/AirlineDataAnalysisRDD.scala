@@ -72,11 +72,10 @@ object AirlineDataAnalysisRDD {
     * the column CANCELLED set to 1.0 (cancelled flights)
     *
     * @param airlineCancellationsRDD
-    * @param carriers
     * @return an RDD of pairs (carrier code , an iterable of all the rows in the data corresponding to that carrier)
     */
-  def generateIndexOfCancellations(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo] ,
-                                   carriers : List[String]) : RDD[(String,Iterable[FlightDelayCancellationInfo])] = ???
+  def generateIndexOfCancellations(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo]
+                                   ) : RDD[(String,Iterable[FlightDelayCancellationInfo])] = ???
 
 
   /**
@@ -96,33 +95,35 @@ object AirlineDataAnalysisRDD {
     * Then reduceByKey to group based on carrier and count the cancellation occurrences for each
     * Sort the o/p in a descending order according to the number of cancellation occurrences
     * @param airlineCancellationsRDD
-    * @param carriers
     * @return an RDD of pairs (carrier code , number of cancellation occurrences)
     */
-  def rankingByReduction(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo] , carriers : List[String]) : RDD[(String,Int)] = ???
+  def rankingByReduction(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo] ) : RDD[(String,Int)] = ???
 
 
 
   //helping function to execute a specific approach for counting the data
-  def rankAirlineCarriers(airlineDataRDD : RDD[FlightDelayCancellationInfo], distinctAirlines : List[String], outputfilePath: String, approach : Int) ={
+  def rankAirlineCarriers(airlineDataRDD : RDD[FlightDelayCancellationInfo], outputfilePath: String, approach : Int) ={
 
     approach match{
       case 1 => {
         //rank the airline carriers using approach #1
+        //First: find a list of distinct airlines in the dataset
+        val distinctAirlines = findDistinctAirlineCarriers(airlineDataRDD).collect().toList
+        //Second: use approach # 1 to find the count
         val rankedAirlineCarriersApproach1 = rankingByCounting(airlineDataRDD,distinctAirlines)
         //print the resulting ranking
         sc.parallelize(rankedAirlineCarriersApproach1).saveAsTextFile(outputfilePath+"_approach1")
       }
       case 2 =>{
         //rank the airline carriers using approach #2
-        val airlineDataIndexedByCarriersWithCancellationRDD = generateIndexOfCancellations(airlineDataRDD,distinctAirlines)
+        val airlineDataIndexedByCarriersWithCancellationRDD = generateIndexOfCancellations(airlineDataRDD)
         val rankedAirlineCarriersApproach2 = rankingUsingIndex(airlineDataIndexedByCarriersWithCancellationRDD)
         //print the resulting ranking
         rankedAirlineCarriersApproach2.saveAsTextFile(outputfilePath+"_approach2")
       }
       case 3 =>{
         //rank the airline carriers using approach #3
-        val rankedAirlineCarriersApproach3 = rankingByReduction(airlineDataRDD,distinctAirlines)
+        val rankedAirlineCarriersApproach3 = rankingByReduction(airlineDataRDD)
         //print the resulting ranking
         rankedAirlineCarriersApproach3.saveAsTextFile(outputfilePath+"_approach3")
       }
@@ -139,17 +140,14 @@ object AirlineDataAnalysisRDD {
     //load input files
     val airlineDataRDD = dataLoader(inputFilePath)
 
-    //find a list of distinct airlines in the dataset
-    val distinctAirlines = findDistinctAirlineCarriers(airlineDataRDD).collect().toList
-
 
     if(args.length < 1){
       //no command line argument to select the approach, then execute all three approaches
-      rankAirlineCarriers(airlineDataRDD, distinctAirlines ,outputfilePath,1)
-      rankAirlineCarriers(airlineDataRDD, distinctAirlines,outputfilePath,2)
-      rankAirlineCarriers(airlineDataRDD, distinctAirlines,outputfilePath,3)
+      rankAirlineCarriers(airlineDataRDD ,outputfilePath,1)
+      rankAirlineCarriers(airlineDataRDD,outputfilePath,2)
+      rankAirlineCarriers(airlineDataRDD,outputfilePath,3)
     }else{
-      rankAirlineCarriers(airlineDataRDD, distinctAirlines,outputfilePath,args(0).toInt)
+      rankAirlineCarriers(airlineDataRDD,outputfilePath,args(0).toInt)
     }
 
     //stop spark
