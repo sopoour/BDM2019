@@ -119,8 +119,7 @@ object YelpAnalysis {
              INNER JOIN yelpBusinessesView AS ybv
              ON yrv.business_id = ybv.business_id
              GROUP BY yrv.business_id, ybv.name
-             HAVING count(*) > 5
-             ORDER BY COUNT(*) DESC // ASK
+             HAVING COUNT(*) > 5
             """)
     }
 
@@ -143,7 +142,7 @@ object YelpAnalysis {
         .agg(count("*"))
         .filter("count(1) > 5")
         .select(yelpBusinesses("name"))
-
+        .orderBy(desc("count(1)"))
     }
 
 

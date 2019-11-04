@@ -15,7 +15,7 @@ object AirlineDataAnalysisRDD {
   val conf: SparkConf = new SparkConf()
     .setAppName("AirlineDataAnalysisRDD")
     //run on 4 nodes --> have 4 partitioning files
-    .setMaster("local[4]") //comment before you create the jar file to be run on the cluster
+    //.setMaster("local[4]") //comment before you create the jar file to be run on the cluster
 
   val sc: SparkContext = new SparkContext(conf)
 
@@ -93,7 +93,6 @@ object AirlineDataAnalysisRDD {
    airlineCancellationsRDD.filter(x => x.CANCELLED == "1.0").groupBy(x => x.OP_CARRIER)
  }
 
-
  /**
    * Given an index of carrier-data rows for each carrier, count the cancellation occurrencies for each carrier
    * Sort the o/p in a descending order according to the number of cancellation occurrences
@@ -131,18 +130,21 @@ object AirlineDataAnalysisRDD {
          //rank the airline carriers using approach #1
          val rankedAirlineCarriersApproach1 = rankingByCounting(airlineDataRDD,distinctAirlines)
          //print the resulting ranking
+
          sc.parallelize(rankedAirlineCarriersApproach1).saveAsTextFile(outputfilePath+"_approach1")
        }
        case 2 =>{
          //rank the airline carriers using approach #2
          val airlineDataIndexedByCarriersWithCancellationRDD = generateIndexOfCancellations(airlineDataRDD,distinctAirlines)
          val rankedAirlineCarriersApproach2 = rankingUsingIndex(airlineDataIndexedByCarriersWithCancellationRDD)
+
          //print the resulting ranking
          rankedAirlineCarriersApproach2.saveAsTextFile(outputfilePath+"_approach2")
        }
        case 3 =>{
          //rank the airline carriers using approach #3
          val rankedAirlineCarriersApproach3 = rankingByReduction(airlineDataRDD,distinctAirlines)
+
          //print the resulting ranking
          rankedAirlineCarriersApproach3.saveAsTextFile(outputfilePath+"_approach3")
        }
@@ -158,7 +160,7 @@ object AirlineDataAnalysisRDD {
 
     //load input files
     val airlineDataRDD = dataLoader(inputFilePath)
-    val count = airlineDataRDD.filter(x => x.OP_CARRIER == "MQ").map(x => x.CANCELLED == "1.0").count().toInt
+    //val count = airlineDataRDD.filter(x => x.OP_CARRIER == "MQ").map(x => x.CANCELLED == "1.0").count().toInt
     //println("Counted: " + count)
 
    // val carriers = List("FL", "OO", "UA", "MQ", "US", "XE", "F9", "YV", "HA", "OH", "NW", "EV", "WN")
@@ -167,10 +169,9 @@ object AirlineDataAnalysisRDD {
 
     //airlineDataRDD.filter(x => x.CANCELLED == "1.0").groupBy(x => x.OP_CARRIER).take(10).map(println)
 
-
     //find a list of distinct airlines in the dataset
     val distinctAirlines = findDistinctAirlineCarriers(airlineDataRDD).collect().toList
-    println(distinctAirlines)
+    //println(distinctAirlines)
 
     if(args.length < 1){
       //no command line argument to select the approach, then execute all three approaches

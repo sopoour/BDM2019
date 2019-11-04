@@ -7,7 +7,7 @@ object AirlineDataAnalysisSQL {
   val spark = SparkSession
     .builder()
     .appName("AirlineDataAnalysisSQL")
-    .master("local[4]") //comment before you create the jar file to be run on the cluster
+    //.master("local[4]") //comment before you create the jar file to be run on the cluster
     .getOrCreate()
 
   spark.sparkContext.setLogLevel("WARN")
@@ -17,13 +17,9 @@ object AirlineDataAnalysisSQL {
     spark.read.format("csv").option("header", "true").load(path)
   }
 
-
-
   def implForAirlineDataAnalysisSQL(inputFilePath: String, outputfilePath: String) = {
-
     //load the data
     val delaysAndCancellations = dataLoader(inputFilePath)
-
 
     //rank the airline carriers based on the cancellation occurrences per carrier
     def airlineRankingSQLCancelled(): DataFrame = {
@@ -35,7 +31,6 @@ object AirlineDataAnalysisSQL {
                    HAVING CANCELLED = 1.0
             """)
     }
-
     // , write the o/p to a file : outputfilePath+"_cancellation" (outputfilePath is read from configuration file)
     delaysAndCancellations.createTempView("delaysAndCancellationsView")
     val cancellationOccurrencesSQL = airlineRankingSQLCancelled()
@@ -44,19 +39,15 @@ object AirlineDataAnalysisSQL {
   //rank the airline carriers based on the total delay times over a year
   def airlineRankingSQLDelays() : DataFrame = {
     spark.sql("""
-                 SELECT OP_CARRIER, YEAR(FL_DATE) as year, SUM(ARR_DELAY)
+                 SELECT YEAR(FL_DATE) as year, OP_CARRIER, SUM(ARR_DELAY)
                  FROM DelayRankingView
                  GROUP BY year, OP_CARRIER
-                 HAVING ARR_DELAY < 0
           """)
   }
   // , write the o/p to a file : outputfilePath+"_delays" (outputfilePath is read from configuration file)
     delaysAndCancellations.createTempView("DelayRankingView")
-    val delayOccurencesSQL = airlineRankingSQLDelays()
-    delayOccurencesSQL.write.mode("overwrite").csv(outputfilePath+"_delays")
-
-
-    //close the spark session
+    val delayOccurrencesSQL = airlineRankingSQLDelays()
+    delayOccurrencesSQL.write.mode("overwrite").csv(outputfilePath+"_delays")
   }
 
     def main(args: Array[String]): Unit = {
