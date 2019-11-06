@@ -120,6 +120,7 @@ object YelpAnalysis {
              ON yrv.business_id = ybv.business_id
              GROUP BY yrv.business_id, ybv.name
              HAVING COUNT(*) > 5
+             ORDER BY COUNT(*) desc
             """)
     }
 

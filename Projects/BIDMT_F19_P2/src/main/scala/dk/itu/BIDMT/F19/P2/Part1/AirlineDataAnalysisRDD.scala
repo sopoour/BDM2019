@@ -55,7 +55,7 @@ object AirlineDataAnalysisRDD {
   def flightCancellationsForCarrier(carrier: String, airlineCancellationsRDD : RDD[FlightDelayCancellationInfo]) : Int = {
     //airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier).map(x => x.CANCELLED == "1.0").count().toInt
     //we have to filter after both. Somehow we mapped it only so that it just counted all my flights and not the cancelled only
-    airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier && x.CANCELLED == "1.0").persist().count().toInt
+    airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier && x.CANCELLED == "1.0").count().toInt
   }
 
   /**
@@ -68,7 +68,9 @@ object AirlineDataAnalysisRDD {
     */
 
   def rankingByCounting(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo] , carriers : List[String]) : List[(String, Int)] = {
-    carriers.map((c: String) => (c, flightCancellationsForCarrier(c, airlineCancellationsRDD)))sortWith(_._2 > _._2)
+    //We need persist only here and nowhere else in the code since this is the only one where we call an existing transformed RDD again
+    airlineCancellationsRDD.persist()
+    carriers.map((c: String) => (c, flightCancellationsForCarrier(c, airlineCancellationsRDD))).sortWith(_._2 > _._2)
   }
 
 
@@ -85,7 +87,7 @@ object AirlineDataAnalysisRDD {
    * @return an RDD of pairs (carrier code , an iterable of all the rows in the data corresponding to that carrier)
    */
  def generateIndexOfCancellations(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo]) : RDD[(String,Iterable[FlightDelayCancellationInfo])] = {
-   airlineCancellationsRDD.filter(x => x.CANCELLED == "1.0").persist().groupBy(x => x.OP_CARRIER)
+   airlineCancellationsRDD.filter(x => x.CANCELLED == "1.0").groupBy(x => x.OP_CARRIER)
  }
 
  /**
@@ -96,7 +98,7 @@ object AirlineDataAnalysisRDD {
    * @return an RDD of pairs (carrier code , number of cancellation occurrences)
    */
  def rankingUsingIndex(airlineCancellationsIndexRDD : RDD[(String,Iterable[FlightDelayCancellationInfo])]) : RDD[(String,Int)] = {
-   airlineCancellationsIndexRDD.map(x => (x._1, x._2.size)).persist().sortBy(_._2, false)
+   airlineCancellationsIndexRDD.map(x => (x._1, x._2.size)).sortBy(_._2, false)
  }
 
    //Ranking Approach # 3 : map each entry in the data to 0 or 1 based on whether a cancellation has occured or not,
@@ -122,6 +124,7 @@ object AirlineDataAnalysisRDD {
        case 1 => {
          //rank the airline carriers using approach #1
          //First: find a list of distinct airlines in the dataset
+         airlineDataRDD.persist()
          val distinctAirlines = findDistinctAirlineCarriers(airlineDataRDD).collect().toList
          //Second: use approach # 1 to find the count
          val rankedAirlineCarriersApproach1 = rankingByCounting(airlineDataRDD,distinctAirlines)
@@ -131,6 +134,7 @@ object AirlineDataAnalysisRDD {
        }
        case 2 =>{
          //rank the airline carriers using approach #2
+         airlineDataRDD.persist()
          val airlineDataIndexedByCarriersWithCancellationRDD = generateIndexOfCancellations(airlineDataRDD)
          val rankedAirlineCarriersApproach2 = rankingUsingIndex(airlineDataIndexedByCarriersWithCancellationRDD)
 
@@ -139,6 +143,7 @@ object AirlineDataAnalysisRDD {
        }
        case 3 =>{
          //rank the airline carriers using approach #3
+         airlineDataRDD.persist()
          val rankedAirlineCarriersApproach3 = rankingByReduction(airlineDataRDD)
 
          //print the resulting ranking
