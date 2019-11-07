@@ -68,7 +68,6 @@ object AirlineDataAnalysisRDD {
     */
 
   def rankingByCounting(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo] , carriers : List[String]) : List[(String, Int)] = {
-    //We need persist only here and nowhere else in the code since this is the only one where we call an existing transformed RDD again
     airlineCancellationsRDD.persist()
     carriers.map((c: String) => (c, flightCancellationsForCarrier(c, airlineCancellationsRDD))).sortWith(_._2 > _._2)
   }
@@ -112,7 +111,7 @@ object AirlineDataAnalysisRDD {
      * @return an RDD of pairs (carrier code , number of cancellation occurrences)
      */
    def rankingByReduction(airlineCancellationsRDD : RDD[FlightDelayCancellationInfo]) : RDD[(String,Int)] = {
-     airlineCancellationsRDD.map(r => (r.OP_CARRIER, if (r.CANCELLED == "1.0") 1 else 0)).persist().reduceByKey(_+_).sortBy(_._2, false)
+     airlineCancellationsRDD.map(r => (r.OP_CARRIER, if (r.CANCELLED == "1.0") 1 else 0)).reduceByKey(_+_).sortBy(_._2, false)
    }
 
 
