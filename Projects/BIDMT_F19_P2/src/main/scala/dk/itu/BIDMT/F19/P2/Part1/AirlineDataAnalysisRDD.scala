@@ -53,7 +53,7 @@ object AirlineDataAnalysisRDD {
     * @return a count of all the occurrences of cancellations
     */
   def flightCancellationsForCarrier(carrier: String, airlineCancellationsRDD : RDD[FlightDelayCancellationInfo]) : Int = {
-    //airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier).map(x => x.CANCELLED == "1.0").count().toInt
+    //OLD: airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier).map(x => x.CANCELLED == "1.0").count().toInt
     //we have to filter after both. Somehow we mapped it only so that it just counted all my flights and not the cancelled only
     airlineCancellationsRDD.filter(x => x.OP_CARRIER == carrier && x.CANCELLED == "1.0").count().toInt
   }

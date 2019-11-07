@@ -44,7 +44,7 @@ object AirlineDataAnalysisSQL {
                  GROUP BY year, OP_CARRIER
           """)
   }
-  // , write the o/p to a file : outputfilePath+"_delays" (outputfilePath is read from configuration file)
+    // write the o/p to a file : outputfilePath+"_delays" (outputfilePath is read from configuration file)
     delaysAndCancellations.createTempView("DelayRankingView")
     val delayOccurrencesSQL = airlineRankingSQLDelays()
     delayOccurrencesSQL.write.mode("overwrite").csv(outputfilePath+"_delays")

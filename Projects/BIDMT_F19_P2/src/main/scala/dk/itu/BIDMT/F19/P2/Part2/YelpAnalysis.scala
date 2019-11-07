@@ -26,7 +26,6 @@ object YelpAnalysis {
     *
     * @return a dataframe with one value representing the total number of reviews for all businesses
     */
-    //SOPHIA: Net sicher ob das ist was wir machen sollen in diesem Query. Siehe Out folder und yelpAnalysis_Q1_SQL
   def totalReviewsSQL():DataFrame = {
     spark.sql("""
       select SUM(`review_count`)
@@ -52,8 +51,6 @@ object YelpAnalysis {
      *
      * @return a Dataframe of (name, stars, review_count) of five star most reviewed businesses
      */
-     //SOPHIA: In der Beschreibung stet dass es mind. 1000 review_count sein soll was aber keinen Sinn macht weil
-     //es keine gibt mit 1000. Habe bereits ins Forum in LearnIT geschriebn und diesbzgl gefragt. Habe es jetzt mal mit 10 ausprobiert
    def fiveStarBusinessesSQL():DataFrame = {
      spark.sql("""
          SELECT name, stars, review_count
@@ -109,7 +106,7 @@ object YelpAnalysis {
       *
       * @return DataFrame of names of businesses that match the criteria
       */
-      //SOPHIA: Mein Ansatz der aber bis jetzt nicht funktioniert, weiss net was falsch ist!
+      //MISSING: The Descending Order didn't work for us when using at the end "ORDER BY COUNT(*) desc"
     def findFamousBusinessesSQL() : DataFrame = {
       spark.sql("""
              SELECT ybv.name
@@ -144,9 +141,6 @@ object YelpAnalysis {
         .select(yelpBusinesses("name"))
         .orderBy(desc("count(1)"))
     }
-
-
-
 
   //Q5:
   /**
