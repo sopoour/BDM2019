@@ -14,6 +14,7 @@ object WordCountRDD {
     val conf = new SparkConf().setMaster("local").setAppName("Word Count")
     val sc = new SparkContext(conf)
 
+<<<<<<< HEAD
     def main(args: Array[String]): Unit = {
       //load the data
       val inputFilePath = "data/pg1597.txt"
@@ -46,4 +47,25 @@ object WordCountRDD {
       //second possibility
       //group by elements what we have in input RDD
       val out2 = words.groupBy(x=>x).map(r => (r._1, r._2.size))*/
+=======
+    
+
+  def main(args: Array[String]): Unit = {
+    //make sure that you download the dataset first (also available from: http://www.gutenberg.org/ebooks/1597)
+    val inputFilePath = "data/pg1597.txt"
+    val inputRDD = ??? //sc...
+
+    // split the text read from file into words
+    val wordsRDD = ??? 
+
+    //write code to calculate word count
+    val countsRDD = ??? //wordRDD...
+
+    //write an action here to start executing your code
+    //countRDD... 
+
+    //stop spark
+    sc.stop()
+  }
+>>>>>>> 85213e3f0c1b4ba0bcfaa3d4037c4a574664fbc3
 }

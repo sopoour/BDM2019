@@ -11,7 +11,7 @@ import com.typesafe.config.ConfigFactory
 /// i.e: 'BikeShareAnalysis.name-of-var/function'
 
 object BikeShareAnalysis {
-  val conf = new SparkConf().setMaster("local").setAppName("Word Count")
+  val conf = new SparkConf().setMaster("local").setAppName("BikeShareDataAnalysis")
   val sc = new SparkContext(conf)
 
   def dataLoader(filePath: String): RDD[BikeShareData] = {
@@ -25,6 +25,7 @@ object BikeShareAnalysis {
     bikeShareDataRDD
   }
 
+<<<<<<< HEAD
   //app1: find trips whose duration is greater than 24 hr
   def findLongTrips(bikeShareDataRDD: RDD[BikeShareData]):RDD[BikeShareData] = {
     bikeShareDataRDD.filter(r => r.duration >= 12*60)
@@ -78,5 +79,30 @@ object BikeShareAnalysis {
     durationTripsPerBikeRDD.take(5).foreach(println)
 
     sc.stop()
+=======
+
+
+  def main(args: Array[String]): Unit = {
+   //Note: make sure that you download the dataset to the below location before you run your application
+    val inputFilePath = "data/metro-bike-share-trips-2019-q1.csv" 
+    //load the data
+    val bikeShareDataRDD = dataLoader(inputFilePath)
+
+    //app1: find trips whose duration is greater than 12 hr
+    val longTrips = ??? //bikeShareDataRDD...
+
+    val longTripsSortedAsc = ??? //longTrips...
+
+    val longTripsSortedDsc = ??? //longTrips...
+
+    //app2: projecting on trip_id, duration
+    val tripAndDurationOnly = ??? //bikeShareDataRDD...
+
+    //app3: find number of trips made by each bike
+    val bikeTripsDsc = ??? //bikeShareDataRDD...
+
+    //app4: find total duration of trips made by each bike
+    val bikeDurationUsed = ?? //bikeShareDataRDD...
+>>>>>>> 85213e3f0c1b4ba0bcfaa3d4037c4a574664fbc3
   }
 }
