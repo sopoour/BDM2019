@@ -45,6 +45,8 @@ object AmazonProductsClustering {
   /**
     * Given a DataFrame of reviews, group all the reviews by product "asin"
     * and then find the average rating for each product
+    * Note: column "overall" in reviews represent a rating given by one reviewer,
+    * therefore you need to find the average of these given by all reviewers for the same product
     *
     * @param reviewsDF
     * @return A DataFrame that contain the columns: asin, averageRating
@@ -106,13 +108,16 @@ object AmazonProductsClustering {
     * @param data
     * @return
     */
-  def clusterUsingKmeans(data: DataFrame, k: Int, seed: Long):KMeansModel = {
+  def clusterUsingKmeans(data: DataFrame, k: Int, seed: Long):KMeansModel = ???
     // Trains a k-means model and then return it
 
-  }
+
 
   /**
     * Print the centers for a given k-mean model
+    *
+    * This function assumes that the features are categories + averageRating per product
+    * when you experiment with other features, you might need to update this function
     *
     * We suggest that you also edit this function to also print the number of products in each cluster
     * Note the function transform (model.transform(dataset))
@@ -122,9 +127,11 @@ object AmazonProductsClustering {
     * @param model
     * @param categories
     * @param outFilePath
-    * @param categoriesSpread
+    * @param spreadVal
     */
-  def printKmeansCenters(model : KMeansModel, categories : Array[String],outFilePath: String,categoriesSpread : Double):Unit = {
+  def printKmeansCenters(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal : Double):Unit = {
+
+    /** Update me! **/
 
     // Shows the result.
     println("Printing Cluster Centers")
@@ -132,9 +139,12 @@ object AmazonProductsClustering {
 
     model
       .clusterCenters
-      .map(v => v.toArray.zip(categories).filter(_._1 != 0).map(p => p._2)++Array(v.toArray.last.round))
-      .foreach{a => a.foreach(c => out.print(c+" * "));out.println}
-
+      .foreach { cluster =>
+        val v = cluster.toArray.splitAt(categories.length)
+        v._1.zip(categories).filter(_._1 != 0).map(p => p._2).foreach(c => out.print(c + " * "))
+        v._2.map(a => (a/spreadVal).round).foreach(c => out.print(c + " * "))
+        out.println
+      }
     //close out file
     out.close()
   }
@@ -158,7 +168,20 @@ object AmazonProductsClustering {
 
   }
 
-  def clusterAmazonData(amazonReviewsDF: DataFrame, amazonMetadataDF: DataFrame, topKCategories: Array[String], spreadValue: Int, clustersNumber: Int, outFilePath: String):KMeansModel = ???
+
+
+  /**
+    * This function should call the above functions to prepare the a DataFrame of feature vectors
+    * then calls clusterUsingKmeans to generate a kmeans model and return that model
+    *
+    * @param amazonReviewsDF
+    * @param amazonMetadataDF
+    * @param topKCategories
+    * @param spreadValue
+    * @param clustersNumber
+    * @return
+    */
+  def clusterAmazonData(amazonReviewsDF: DataFrame, amazonMetadataDF: DataFrame, topKCategories: Array[String], spreadValue: Int, clustersNumber: Int):KMeansModel = ???
 
   def main(args: Array[String]): Unit = {
     val config = ConfigFactory.load()
@@ -194,7 +217,7 @@ object AmazonProductsClustering {
 
 
     //find the kmeans model for the dataset
-    val kmeansModel = clusterAmazonData(amazonReviewsDF, amazonMetadataDF, topKCategories,spreadValue, clustersNumber ,outFilePath)
+    val kmeansModel = clusterAmazonData(amazonReviewsDF, amazonMetadataDF, topKCategories,spreadValue, clustersNumber)
 
     //print or evaluate the model
     ???
