@@ -1,6 +1,6 @@
 package dk.itu.BIDMT.F19.P3
 
-import java.io.PrintWriter
+import java.io.{BufferedOutputStream, PrintWriter}
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.ml.clustering.{KMeans, KMeansModel}
@@ -149,6 +149,37 @@ object AmazonProductsClustering {
     out.close()
   }
 
+  /**
+    * Same as printKmeansCenters but writes the o/p to HDFS
+    * To be used when you execute your code on the cluster
+    *
+    * @param model
+    * @param categories
+    * @param outFilePath
+    * @param spreadVal
+    */
+  def printKmeansCentersCluster(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal : Double):Unit={
+    import org.apache.hadoop.fs.{FileSystem,Path}
+
+    //get the hdfs information from spark context
+    val hdfs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
+    //create outFile in HDFS given the file name
+    val outFile = hdfs.create(new Path(outFilePath))
+    //create a BufferedOutputStream to write to the file
+    val out = new BufferedOutputStream(outFile)
+
+    model
+      .clusterCenters
+      .foreach { cluster =>
+        val v = cluster.toArray.splitAt(categories.length)
+        v._1.zip(categories).filter(_._1 != 0).map(p => p._2).foreach(c => out.write((c + " * ").getBytes("UTF-8")))
+        v._2.map(a => (a/spreadVal).round).foreach(c => out.write((c + " * ").getBytes("UTF-8")))
+        out.write('\n')
+      }
+    out.close()
+
+  }
+
 
   /**
     * Evaluate a given k-means model based on the input dataset
@@ -221,6 +252,9 @@ object AmazonProductsClustering {
 
     //print or evaluate the model
     ???
+
+
+    spark.close()
   }
 
 }
