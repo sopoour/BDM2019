@@ -161,16 +161,38 @@ object AmazonProductsClustering {
    def printKmeansCenters(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal : Double, dataset: DataFrame):Unit = {
      /** Update me! **/
      val predictions = model.transform(dataset)
-     val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction").select("count").collect.flatMap(_.toSeq)
+     val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction")
+
+     val clusterCentersInfo = udf {(index: Double) =>
+       val clusterCenters:Seq[(Double, Double)] = Seq()
+       model.clusterCenters.foreach { cluster =>
+         clusterCenters :+ cluster.toArray.indexOf(index) :+ cluster
+         if (clusterCenters.indexOf() == index){
+           clusterCenters
+         }
+       }
+     }
+     /*
+     //this is working but does have a weird output
+     var clusterCenters:Seq[(Double,Double,Double,Double,Double,Double,Double)] = Seq()
+     for(e <- model.clusterCenters){
+       clusterCenters = clusterCenters :+ ((e(0)),e(1),e(2),e(3),e(4),e(5),e(6))
+     }
+     val centersDF = clusterCenters.toDF()
+
+     groupedPredictions.crossJoin(centersDF).show(10, false)
+    */
+
+     groupedPredictions.withColumn("clusterCenterInformation", clusterCentersInfo($"prediction")).show(10, false)
 
      // Shows the result.
      println("Printing Cluster Centers")
      val out = new PrintWriter(outFilePath)
+
      model
        .clusterCenters
        .foreach { cluster =>
-         val clusterArray = cluster.toArray
-         val v = clusterArray.splitAt(categories.length)
+         val v = cluster.toArray.splitAt(categories.length)
          v._1.zip(categories).filter(_._1 != 0).map(p => p._2).foreach(c => out.print(c + " * "))
          //split the second part of the tuple which includes price & rating
          val c = v._2.splitAt(1)
@@ -178,12 +200,9 @@ object AmazonProductsClustering {
          c._1.foreach(c => out.print(c + " * "))
          //print rating devided by spreadVal and rounded
          c._2.map(a =>(a/spreadVal).round).foreach(c => out.print(c + " * "))
-         groupedPredictions.foreach(c => out.print(c + " * "))
          //cluster + groupedPredictions.map
          out.println
        }
-
-
 
      //close out file
      out.close()
