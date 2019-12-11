@@ -1,13 +1,15 @@
 package dk.itu.BIDMT.F19.P3
 
 import java.io.{BufferedOutputStream, PrintWriter}
-
+import scala.collection.mutable.ArrayBuffer
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.ml.clustering.{KMeans, KMeansModel}
 import org.apache.spark.ml.evaluation.ClusteringEvaluator
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
+
+import scala.collection.mutable.ListBuffer
 
 object AmazonProductsClustering {
 
@@ -163,49 +165,52 @@ object AmazonProductsClustering {
      val predictions = model.transform(dataset)
      val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction")
 
-     val clusterCentersInfo = udf {(index: Double) =>
-       val clusterCenters:Seq[(Double, Double)] = Seq()
-       model.clusterCenters.foreach { cluster =>
-         clusterCenters :+ cluster.toArray.indexOf(index) :+ cluster
-         if (clusterCenters.indexOf() == index){
-           clusterCenters
-         }
-       }
+     //this works:
+     val clusterCentersInfo = udf {(index: Int) =>
+       model.clusterCenters(index)
+       //This doesn't work cuz the output is weird for pricing & rating. The toString fucks up the values
+       //That's the code I've also sent to Iman
+       /*val centers = model.clusterCenters
+       val v = centers(index).toArray.splitAt(categories.length)
+       val finalOutput = ArrayBuffer[String]()
+       finalOutput ++= v._1.zip(categories).filter(_._1 != 0).map(p => p._2)
+       val c = v._2.splitAt(1)
+       //finalOutput ++ String.valueOf(c._1.map(a => a.round))
+       finalOutput += c._1.map(a => a.round).toString
+       //print rating divided by spreadVal and rounded
+       //finalOutput ++ String.valueOf(c._2.map(a =>(a/spreadVal).round))
+       finalOutput += c._2.map(a =>(a/spreadVal).round).toString
+       finalOutput
+        */
      }
-     /*
-     //this is working but does have a weird output
-     var clusterCenters:Seq[(Double,Double,Double,Double,Double,Double,Double)] = Seq()
-     for(e <- model.clusterCenters){
-       clusterCenters = clusterCenters :+ ((e(0)),e(1),e(2),e(3),e(4),e(5),e(6))
-     }
-     val centersDF = clusterCenters.toDF()
-
-     groupedPredictions.crossJoin(centersDF).show(10, false)
-    */
-
-     groupedPredictions.withColumn("clusterCenterInformation", clusterCentersInfo($"prediction")).show(10, false)
 
      // Shows the result.
      println("Printing Cluster Centers")
-     val out = new PrintWriter(outFilePath)
+     //val out = new PrintWriter(outFilePath)
+     groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction")).show(false)
+     //Doesn't work with writing it on the csv and it's also not a csv but just a partition (RDD), I've tried toDF before the write but that doesn't work
+     //groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction")).write.mode("overwrite").csv(outFilePath)
 
-     model
-       .clusterCenters
-       .foreach { cluster =>
-         val v = cluster.toArray.splitAt(categories.length)
-         v._1.zip(categories).filter(_._1 != 0).map(p => p._2).foreach(c => out.print(c + " * "))
-         //split the second part of the tuple which includes price & rating
-         val c = v._2.splitAt(1)
-         //print price normal
-         c._1.foreach(c => out.print(c + " * "))
-         //print rating devided by spreadVal and rounded
-         c._2.map(a =>(a/spreadVal).round).foreach(c => out.print(c + " * "))
-         //cluster + groupedPredictions.map
-         out.println
-       }
+     /*
+          model
+            .clusterCenters
+            .foreach { cluster =>
+              val v = cluster.toArray.splitAt(categories.length)
+              v._1.zip(categories).filter(_._1 != 0).map(p => p._2).foreach(c => out.print(c + " * "))
+              //split the second part of the tuple which includes price & rating
+              val c = v._2.splitAt(1)
+              //print price normal
+              c._1.foreach(c => out.print(c + " * "))
+              //print rating devided by spreadVal and rounded
+              c._2.map(a =>(a/spreadVal).round).foreach(c => out.print(c + " * "))
+              //cluster + groupedPredictions.map
+              out.println
+            }
 
-     //close out file
-     out.close()
+          //close out file
+          out.close()
+
+          */
    }
 
    /**
