@@ -2,17 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="24e86e5d-51d7-4ebf-be2b-85774e52af03" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Exercises/Exercise12Solution/build.sbt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/Exercise12Solution/data/meteors.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/Exercise12Solution/getdata.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/Exercise12Solution/project/assembly.sbt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/Exercise12Solution/project/build.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/Exercise12Solution/src/main/resources/application.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/Exercise12Solution/src/main/scala/dk/itu/BIDMT/Exercises/Exercise12/MeteoriteCluster.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/__MACOSX/Exercise12Solution/._.DS_Store" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exercises/__MACOSX/Exercise12Solution/project/._.DS_Store" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P3/data/meta_Patio_Lawn_and_Garden.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/src/main/scala/dk/itu/BIDMT/F19/P2/Part1/AirlineDataAnalysisRDD.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P2/src/main/scala/dk/itu/BIDMT/F19/P2/Part1/AirlineDataAnalysisRDD.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Projects/BIDMT_F19_P3/src/main/resources/application.conf" beforeDir="false" afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P3/src/main/resources/application.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Projects/BIDMT_F19_P3/src/main/scala/dk/itu/BIDMT/F19/P3/AmazonProductsClustering.scala" beforeDir="false" afterPath="$PROJECT_DIR$/Projects/BIDMT_F19_P3/src/main/scala/dk/itu/BIDMT/F19/P3/AmazonProductsClustering.scala" afterDir="false" />
     </list>
@@ -26,7 +15,7 @@
     <option name="done" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -35,8 +24,8 @@
     <option name="version" value="1" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="62" />
-    <option name="y" value="383" />
+    <option name="x" value="61" />
+    <option name="y" value="382" />
     <option name="width" value="1890" />
     <option name="height" value="930" />
   </component>
@@ -45,6 +34,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../AI_Robotics" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -85,11 +75,12 @@
       <workItem from="1570617558700" duration="1000" />
       <workItem from="1574860952710" duration="16000" />
       <workItem from="1575460442483" duration="598000" />
+      <workItem from="1576171151971" duration="650000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="745000" />
+    <option name="totallyTimeSpent" value="1395000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -153,8 +144,6 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.git/MERGE_MSG">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/.git/MERGE_MSG" />
   </component>
 </project>

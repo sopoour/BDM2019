@@ -160,35 +160,31 @@ object AmazonProductsClustering {
      * @param outFilePath
      * @param spreadVal
      */
+     //Print prediction, count and clusterInformation in one dataframe:
    def printKmeansCenters(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal : Double, dataset: DataFrame):Unit = {
-     /** Update me! **/
      val predictions = model.transform(dataset)
      val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction")
 
-     //this works:
      val clusterCentersInfo = udf {(index: Int) =>
        //model.clusterCenters(index)
-       //This doesn't work cuz the output is weird for pricing & rating. The toString fucks up the values
-       //That's the code I've also sent to Iman
        val centers = model.clusterCenters
        val v = centers(index).toArray.splitAt(categories.length)
        val c = v._2.splitAt(1)
        val completeList = v._1.zip(categories).filter(_._1 != 0).map(p => p._2).toList ::: c._1.map(a => a.round).toList ::: c._2.map(a =>(a/spreadVal).round).toList
        completeList.toString()
      }
-
      // Shows the result.
      println("Printing Cluster Centers")
      //val out = new PrintWriter(outFilePath)
      //groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction")).show(false)
-     //Doesn't work with writing it on the csv and it's also not a csv but just a partition (RDD), I've tried toDF before the write but that doesn't work
+     //Print the Dataframe on csv (outfilepath)
      groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction"))
        .coalesce(1)
        .write.format("com.databricks.spark.csv")
        .option("header", true)
        .mode("overwrite")
        .save(outFilePath)
-
+      //OLD Version of printing only the cluster center information:
      /*
           model
             .clusterCenters
@@ -211,7 +207,32 @@ object AmazonProductsClustering {
           */
    }
 
-   /**
+  def printKmeansCentersTSV(model : KMeansModel, categories : Array[String], outFilePath: String, spreadVal :Double):Unit = {
+
+    // Shows the result.
+    println("Printing Cluster Centers TSV")
+    val out = new PrintWriter(outFilePath)
+
+    // Print the header, aka the naming of each column.
+    categories.foreach(c => out.print(c +"\t"))
+    out.print("price"+"\t" )
+    out.print("rating")
+    out.println
+
+    // Print the cluster data.
+    model
+      .clusterCenters
+      .foreach { cluster =>
+        cluster.toArray.foreach(c => out.print(c.toInt + "\t"))
+        out.println
+      }
+
+    // Close the out file.
+    out.close()
+  }
+
+
+  /**
      * Same as printKmeansCenters but writes the o/p to HDFS
      * To be used when you execute your code on the cluster
      *
@@ -221,23 +242,12 @@ object AmazonProductsClustering {
      * @param spreadVal
      */
    def printKmeansCentersCluster(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal: Double, dataset: DataFrame):Unit={
-     import org.apache.hadoop.fs.{FileSystem,Path}
-
-     //get the hdfs information from spark context
-     val hdfs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
-     //create outFile in HDFS given the file name
-     hdfs.create(new Path(outFilePath))
-     //create a BufferedOutputStream to write to the file
-    // val out = new BufferedOutputStream(outFile)
-
-     val predictions = model.transform(dataset)
+          val predictions = model.transform(dataset)
      val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction")
 
      //this works:
      val clusterCentersInfo = udf {(index: Int) =>
        //model.clusterCenters(index)
-       //This doesn't work cuz the output is weird for pricing & rating. The toString fucks up the values
-       //That's the code I've also sent to Iman
        val centers = model.clusterCenters
        val v = centers(index).toArray.splitAt(categories.length)
        val c = v._2.splitAt(1)
@@ -247,13 +257,21 @@ object AmazonProductsClustering {
 
      println("Printing Cluster Centers")
      //val out = new PrintWriter(outFilePath)
-     //groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction")).show(false)
-     //Doesn't work with writing it on the csv and it's also not a csv but just a partition (RDD), I've tried toDF before the write but that doesn't work
+
+     import org.apache.hadoop.fs.{FileSystem,Path}
+
+     //get the hdfs information from spark context
+     val hdfs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
+     //create outFile in HDFS given the file name
+     hdfs.create(new Path(outFilePath))
+     //create a BufferedOutputStream to write to the file
+     // val out = new BufferedOutputStream(outFile)
      groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction"))
        .coalesce(1)
        .write.format("com.databricks.spark.csv")
        .option("header", true)
        .mode("overwrite")
+       //this didn't work somehow:
        .save("hdfs://" + outFilePath)
     /*
      model
@@ -283,7 +301,6 @@ object AmazonProductsClustering {
 
      // Evaluate clustering by computing Silhouette score
      val evaluator = new ClusteringEvaluator()
-
      val silhouette = evaluator.evaluate(predictions)
      println(s"Silhouette with squared euclidean distance = $silhouette")
 
