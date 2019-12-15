@@ -20,6 +20,7 @@ object AirlineDataAnalysisSQL {
   def implForAirlineDataAnalysisSQL(inputFilePath: String, outputfilePath: String) = {
     //load the data
     val delaysAndCancellations = dataLoader(inputFilePath)
+    delaysAndCancellations.persist()
 
     //rank the airline carriers based on the cancellation occurrences per carrier
     def airlineRankingSQLCancelled(): DataFrame = {
