@@ -10,9 +10,9 @@ cleanupCommands :=  "spark.stop()"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.4" % "provided"
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.4"  % "provided"
-libraryDependencies += "org.apache.spark" %% "spark-yarn" % "2.4.4" % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.4" //% "provided"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.4"  //% "provided"
+libraryDependencies += "org.apache.spark" %% "spark-yarn" % "2.4.4" //% "provided"
 
 
 libraryDependencies += "com.typesafe" % "config" % "1.3.0"

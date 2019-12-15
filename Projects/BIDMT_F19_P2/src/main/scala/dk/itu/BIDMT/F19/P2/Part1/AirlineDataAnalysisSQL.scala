@@ -7,7 +7,7 @@ object AirlineDataAnalysisSQL {
   val spark = SparkSession
     .builder()
     .appName("AirlineDataAnalysisSQL")
-    //.master("local[4]") //comment before you create the jar file to be run on the cluster
+    .master("local[4]") //comment before you create the jar file to be run on the cluster
     .getOrCreate()
 
   spark.sparkContext.setLogLevel("WARN")
@@ -41,6 +41,7 @@ object AirlineDataAnalysisSQL {
     spark.sql("""
                  SELECT YEAR(FL_DATE) as year, OP_CARRIER, SUM(ARR_DELAY)
                  FROM DelayRankingView
+                 WHERE ARR_DELAY > 0
                  GROUP BY year, OP_CARRIER
           """)
   }

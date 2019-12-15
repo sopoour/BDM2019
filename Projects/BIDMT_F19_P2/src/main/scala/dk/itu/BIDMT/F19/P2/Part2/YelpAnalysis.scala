@@ -10,7 +10,7 @@ object YelpAnalysis {
   val spark = SparkSession
     .builder()
     .appName("YelpDataAnalysis")
-    //.master("local[4]") //comment before you create the jar file to be run on the cluster
+    .master("local[4]") //comment before you create the jar file to be run on the cluster
     .getOrCreate()
 
   spark.sparkContext.setLogLevel("WARN")
@@ -109,14 +109,15 @@ object YelpAnalysis {
       //MISSING: The Descending Order didn't work for us when using at the end "ORDER BY COUNT(*) desc"
     def findFamousBusinessesSQL() : DataFrame = {
       spark.sql("""
-             SELECT ybv.name
+             SELECT ybv.name, COUNT(yrv.business_id) as count
              FROM yelpReviewsView AS yrv
              INNER JOIN influencerUsersView AS iuv
              ON yrv.user_id = iuv.user_id
              INNER JOIN yelpBusinessesView AS ybv
              ON yrv.business_id = ybv.business_id
              GROUP BY yrv.business_id, ybv.name
-             HAVING COUNT(*) > 5
+             HAVING count > 5
+             ORDER BY count desc
             """)
     }
 
@@ -190,6 +191,7 @@ object YelpAnalysis {
       case 1 => {
         //load data needed by Q1
         val yelpBusiness = dataLoader(yelpBusinessFilePath)
+        yelpBusiness.persist()
 
         // Q1: Analyze yelp_academic_dataset_Business.json to find the number of reviews for all businesses.
         // The output should be in the form of DataFrame of a single count.
@@ -197,7 +199,6 @@ object YelpAnalysis {
 
         implSelection match{
           case 1 => {
-
             yelpBusiness.createTempView("yelpBusinessesView")
             val totalReviewsPerBusinessSQL = totalReviewsSQL()
             totalReviewsPerBusinessSQL.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q1_SQL")
@@ -211,6 +212,7 @@ object YelpAnalysis {
       } case 2 => {
         //load data needed by Q2
         val yelpBusiness = dataLoader(yelpBusinessFilePath)
+        yelpBusiness.persist()
 
         // Q2:  Analyze Analyze yelp_academic_dataset_Business.json to find all businesses that have received 5 stars and that have been reviewed by 1000 or more users
         println("Q2: query yelp_academic_dataset_Business.json to find businesses that have received 5 stars and that have been reviewed by 1000 or more users")
@@ -231,6 +233,7 @@ object YelpAnalysis {
       case 3 => {
         //load data needed by Q3
         val yelpUsers = dataLoader(yelpUserFilePath)
+        yelpUsers.persist()
 
         // Q3:Analyze yelp_academic_dataset_users.json to find the influencer users who have written more than 1000 reviews.
         println("Q3: query yelp_academic_dataset_users.json to find influencers")
@@ -243,6 +246,7 @@ object YelpAnalysis {
           }
           case 2 => {
             val influencerUsersDF = findInfluencerUserDF(yelpUsers)
+            influencerUsersDF.persist()
             influencerUsersDF.write.mode("overwrite").csv(yelpAnalysisOutFilePath+"_Q3_DF")
           }
           case _ => println("YelpAnalysis: invalid implementation type, valid types 1 = SQL, 2 = DF")
@@ -251,9 +255,13 @@ object YelpAnalysis {
       case 4 => {
         //load data needed by Q4
         val yelpBusiness = dataLoader(yelpBusinessFilePath)
+        yelpBusiness.persist()
         val yelpReviews = dataLoader(yelpReviewsFilePath)
+        yelpReviews.persist()
         val yelpUsers = dataLoader(yelpUserFilePath)
+        yelpUsers.persist()
         val influencerUsersDF = findInfluencerUserDF(yelpUsers)
+        influencerUsersDF.persist()
 
         // Q4: Analyze yelp_academic_dataset_review.json and a view created from your answer to Q3  to find names of businesses that have been reviewed by more than 5 influencer users.
         println("Q4: yelp_academic_dataset_review.json and a view created from your answer to Q3  to find names of businesses that have been reviewed by more than 5 influencer users")
@@ -277,7 +285,9 @@ object YelpAnalysis {
       case 5 => {
         //load data needed by Q5
         val yelpReviews = dataLoader(yelpReviewsFilePath)
+        yelpReviews.persist()
         val yelpUsers = dataLoader(yelpUserFilePath)
+        yelpUsers.persist()
 
         // Q5: Analyze yelp_academic_dataset_review.json  and yelp_academic_dataset_users.json to find the average stars given by each user. You need to order the users descendingly according to their average star counts.
         println("Q5: query yelp_academic_dataset_reviews.json, query yelp_academic_dataset_users.json to find average stars given by each user, descendingly ordered")
@@ -300,8 +310,11 @@ object YelpAnalysis {
       case 0 => {
         //load data needed by all queries
         val yelpBusiness = dataLoader(yelpBusinessFilePath)
+        yelpBusiness.persist()
         val yelpReviews = dataLoader(yelpReviewsFilePath)
+        yelpReviews.persist()
         val yelpUsers = dataLoader(yelpUserFilePath)
+        yelpUsers.persist()
 
         //create views for all data files
         yelpBusiness.createTempView("yelpBusinessesView")
