@@ -4,7 +4,7 @@
 		module="bidm_f19_exam-build"
 		revision="0.1.0-SNAPSHOT"
 		status="integration"
-		publication="20191215145543"
+		publication="20191215152734"
 		e:sbtVersion="1.0" e:scalaVersion="2.12"
 	>
 		<description>

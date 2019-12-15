@@ -4,7 +4,7 @@
 		module="bidm_f19_exam$sbt_2.12"
 		revision="0.1"
 		status="integration"
-		publication="20191215145600"
+		publication="20191215152751"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>

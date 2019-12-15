@@ -26,7 +26,9 @@ object LibraryCheckoutBatchProcessing {
     * @param path
     * @return DataFrame of the loaded data
     */
-  def dataLoader(path: String): DataFrame = ???
+  def dataLoader(path: String): DataFrame ={
+    spark.read.format("csv").option("header", "true").load(path)
+  }
 
   /**
     * Q1
@@ -35,7 +37,13 @@ object LibraryCheckoutBatchProcessing {
     * @param libraryInventoryDF
     * @return A DaraFrame of two columns: Author, NumPublications
     */
-  def libraryItemsPerAuthor(libraryInventoryDF: DataFrame): DataFrame = ???
+  def libraryItemsPerAuthor(libraryInventoryDF: DataFrame): DataFrame = {
+    libraryInventoryDF
+      .groupBy("Author")
+      .agg(sum("ItemCount")).withColumnRenamed("sum(ItemCount)", "NumPublications")
+      .select("Author", "NumPublications")
+      .sort(desc("NumPublications"))
+  }
 
 
   /**
@@ -58,7 +66,29 @@ object LibraryCheckoutBatchProcessing {
     * @param dataDictionaryDF
     * @return A DataFrame of two columns: Format,CheckoutCount
     */
-  def numberCheckoutRecordsPerFormat(checkoutDF: DataFrame, dataDictionaryDF: DataFrame): DataFrame = ???
+  def numberCheckoutRecordsPerFormat(checkoutDF: DataFrame, dataDictionaryDF: DataFrame): DataFrame = {
+     val format = udf{(formatGroup: String, formatSubgroup: String) =>
+       formatSubgroup match {
+         case null => formatGroup
+         case _ => formatGroup + ": " + formatSubgroup
+       }
+       /*if (formatSubgroup != null){
+         formatGroup + ": " + formatSubgroup
+       }
+       else {
+         formatGroup
+       }*/
+     }
+
+    val newDataDictDF = dataDictionaryDF.withColumn("format", format($"Format Group", $"Format Subgroup"))
+
+    checkoutDF
+      .join(newDataDictDF, checkoutDF("ItemType") === newDataDictDF("Code"))
+      .groupBy("format")
+      .agg(count("*")).withColumnRenamed("count(1)", "CheckoutCount")
+      .select("format", "CheckoutCount")
+
+  }
 
   /**
     * Q3
@@ -76,7 +106,17 @@ object LibraryCheckoutBatchProcessing {
     * @param k
     * @return A DataFrame of two columns: ItemLocationDescription, NumCheckoutItemsAtLocation - num of records in this dataframe is equal to k
     */
-  def topKCheckoutLocations(checkoutDF: DataFrame, libraryInventoryDF: DataFrame, dataDictionaryDF: DataFrame, k: Int): DataFrame = ???
+  def topKCheckoutLocations(checkoutDF: DataFrame, libraryInventoryDF: DataFrame, dataDictionaryDF: DataFrame, k: Int): DataFrame = {
+    libraryInventoryDF
+      .join(checkoutDF, libraryInventoryDF("BibNum") === checkoutDF("BibNumber"))
+      .join(dataDictionaryDF, libraryInventoryDF("ItemLocation") === dataDictionaryDF("Code"))
+      .groupBy(libraryInventoryDF("ItemLocation"), dataDictionaryDF("Description"))
+      .count().withColumnRenamed("count", "NumCheckoutItemAtLocation")
+      .sort(desc("NumCheckoutItemAtLocation"))
+      .select("Description", "NumCheckoutItemAtLocation")
+      .limit(k)
+  }
+
 
   def main(args: Array[String]): Unit = {
     //load configuration
@@ -122,6 +162,7 @@ object LibraryCheckoutBatchProcessing {
         .write
         .mode("overwrite")
         .csv(outFilesPath + "/q2")
+
       //Query 3
       topKCheckoutLocations(checkoutDF, libraryInventoryDF, dataDictionaryDF, numLibraryLocations)
         .write
@@ -139,6 +180,7 @@ object LibraryCheckoutBatchProcessing {
             .mode("overwrite")
             .csv(outFilesPath + "/q1")
         }
+
         case 2 => {
           //Query 2
           //load data
