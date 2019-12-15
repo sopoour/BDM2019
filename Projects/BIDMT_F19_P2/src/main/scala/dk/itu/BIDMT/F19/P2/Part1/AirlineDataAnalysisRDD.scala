@@ -128,6 +128,7 @@ object AirlineDataAnalysisRDD {
       }
       case 2 =>{
         //rank the airline carriers using approach #2
+        airlineDataRDD.persist()
         val airlineDataIndexedByCarriersWithCancellationRDD = generateIndexOfCancellations(airlineDataRDD)
         val rankedAirlineCarriersApproach2 = rankingUsingIndex(airlineDataIndexedByCarriersWithCancellationRDD)
         //print the resulting ranking
@@ -135,6 +136,7 @@ object AirlineDataAnalysisRDD {
       }
       case 3 =>{
         //rank the airline carriers using approach #3
+        airlineDataRDD.persist()
         val rankedAirlineCarriersApproach3 = rankingByReduction(airlineDataRDD)
         //print the resulting ranking
         rankedAirlineCarriersApproach3.saveAsTextFile(outputfilePath+"_approach3")

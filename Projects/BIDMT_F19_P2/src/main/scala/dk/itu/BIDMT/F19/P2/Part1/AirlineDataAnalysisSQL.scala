@@ -7,13 +7,13 @@ object AirlineDataAnalysisSQL {
   val spark = SparkSession
     .builder()
     .appName("AirlineDataAnalysisSQL")
-    .master("local[4]") //comment before you create the jar file to be run on the cluster
+    //.master("local[4]") //comment before you create the jar file to be run on the cluster
     .getOrCreate()
 
   spark.sparkContext.setLogLevel("WARN")
 
   //load the data
-  def dataLoader(path: String):DataFrame ={
+  def dataLoader(path: String): DataFrame ={
     spark.read.format("csv").option("header", "true").load(path)
   }
 
