@@ -7,7 +7,7 @@ object AirlineDataAnalysisSQL {
   val spark = SparkSession
     .builder()
     .appName("AirlineDataAnalysisSQL")
-    .master("local[4]") //comment before you create the jar file to be run on the cluster
+    //.master("local[4]") //comment before you create the jar file to be run on the cluster
     .getOrCreate()
 
   spark.sparkContext.setLogLevel("WARN")
