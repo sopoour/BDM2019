@@ -44,6 +44,8 @@ object AmazonProductsClustering {
      * @return An array containing the top k categories found in the dataset
      */
  def findTopKCategory(productsMetadataDF : DataFrame, k:Int) : Array[String] = {
+   //use persist because of iterative operations count() & collect()
+   productsMetadataDF.persist()
    productsMetadataDF
      .withColumn("categories", explode($"categories"))
      .withColumn("categories", explode($"categories"))
@@ -67,9 +69,11 @@ object AmazonProductsClustering {
      * @return A DataFrame that contain the columns: asin, averageRating
      */
    def findAvgProductRating(reviewsDF : DataFrame) : DataFrame = {
+     //add persist because of iterative operation avg()
+     reviewsDF.persist()
      reviewsDF
      .groupBy("asin")
-     .agg(avg("overall")).withColumnRenamed("avg(overall)", "averageRating")
+     .avg("overall").withColumnRenamed("avg(overall)", "averageRating")
    }
 
 
@@ -87,8 +91,8 @@ object AmazonProductsClustering {
      */
    def findProductFeatures(productsRatingsDF : DataFrame, productsMetadataDF : DataFrame) : DataFrame = {
      productsRatingsDF
-       .join(productsMetadataDF, productsRatingsDF("asin")===productsMetadataDF("asin"))
-       .select(productsMetadataDF("asin"), productsMetadataDF("categories"), productsMetadataDF("price"), productsRatingsDF("averageRating"))
+       .join(productsMetadataDF, "asin")
+       .select($"asin", $"categories", $"price", $"averageRating")
    }
 
 
@@ -122,6 +126,7 @@ object AmazonProductsClustering {
      val createFeatureVector = udf{(categories:Seq[Seq[String]], price: Double, averageRating: Double) =>
        topCategories.map(e => if (categories.flatten.contains(e)) 1.0 else 0.0) :+ price :+ (averageRating*spreadVal)
      }
+     productData.persist()
      productData.withColumn("features", createFeatureVector($"categories",$"price", $"averageRating")).select("features").na.drop
    }
 
@@ -163,6 +168,8 @@ object AmazonProductsClustering {
      //Print prediction, count and clusterInformation in one dataframe:
    def printKmeansCenters(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal : Double, dataset: DataFrame):Unit = {
      val predictions = model.transform(dataset)
+       //persist because of iterative operation count()
+       predictions.persist()
      val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction")
 
      val clusterCentersInfo = udf {(index: Int) =>
@@ -178,6 +185,9 @@ object AmazonProductsClustering {
      //val out = new PrintWriter(outFilePath)
      //groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction")).show(false)
      //Print the Dataframe on csv (outfilepath)
+
+       //persist again groupedPredictions before applying the iterative application of udf
+       groupedPredictions.persist()
      groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction"))
        .coalesce(1)
        .write.format("com.databricks.spark.csv")
@@ -243,6 +253,8 @@ object AmazonProductsClustering {
      */
    def printKmeansCentersCluster(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal: Double, dataset: DataFrame):Unit={
           val predictions = model.transform(dataset)
+     //using persist before applying count()
+     predictions.persist()
      val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction")
 
      //this works:
@@ -266,6 +278,9 @@ object AmazonProductsClustering {
      hdfs.create(new Path(outFilePath))
      //create a BufferedOutputStream to write to the file
      // val out = new BufferedOutputStream(outFile)
+
+     //use persist before applying udf
+     groupedPredictions.persist()
      groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction"))
        .coalesce(1)
        .write.format("com.databricks.spark.csv")
@@ -318,7 +333,14 @@ object AmazonProductsClustering {
      * @return
      */
    def clusterAmazonData(amazonReviewsDF: DataFrame, amazonMetadataDF: DataFrame, topKCategories: Array[String], spreadValue: Double, clustersNumber: Int): KMeansModel ={
-     clusterUsingKmeans(prepareDataForClustering(findProductFeatures(findAvgProductRating(amazonReviewsDF),amazonMetadataDF), topKCategories, spreadValue), clustersNumber)
+     clusterUsingKmeans(
+       prepareDataForClustering(
+         findProductFeatures(
+           findAvgProductRating(amazonReviewsDF),
+           amazonMetadataDF),
+         topKCategories,
+         spreadValue),
+       clustersNumber)
    }
 
   def main(args: Array[String]): Unit = {
@@ -336,8 +358,11 @@ object AmazonProductsClustering {
 
     //load reviews and metadata
     val amazonReviewsDF = jsonDataLoader(amazonReviewsFilePath)
+    amazonReviewsDF.persist()
     val amazonMetadataDF = jsonDataLoader(amazonMetadataFilePath)
+    amazonMetadataDF.persist()
     val amazonRatingsDF = findAvgProductRating(amazonReviewsDF)
+    amazonRatingsDF.persist()
     val productData = findProductFeatures(amazonRatingsDF, amazonMetadataDF)
 
     //generate an array of the top k categories to be considered as features for k-means clustering
