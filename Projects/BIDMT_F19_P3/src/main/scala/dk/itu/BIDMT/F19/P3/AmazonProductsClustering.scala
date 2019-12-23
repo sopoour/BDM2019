@@ -17,7 +17,7 @@ object AmazonProductsClustering {
   val spark = SparkSession
     .builder()
     .appName("AmazonProductsClustering")
-    .master("local[4]")
+    //.master("local[4]")
     .getOrCreate()
 
   //load spark implicits
@@ -252,7 +252,7 @@ object AmazonProductsClustering {
      * @param spreadVal
      */
    def printKmeansCentersCluster(model : KMeansModel, categories : Array[String],outFilePath: String,spreadVal: Double, dataset: DataFrame):Unit={
-          val predictions = model.transform(dataset)
+     val predictions = model.transform(dataset)
      //using persist before applying count()
      predictions.persist()
      val groupedPredictions = predictions.groupBy("prediction").count().orderBy("prediction")
@@ -267,28 +267,15 @@ object AmazonProductsClustering {
        completeList.toString()
      }
 
-     println("Printing Cluster Centers")
-     //val out = new PrintWriter(outFilePath)
-
-     import org.apache.hadoop.fs.{FileSystem,Path}
+     /*import org.apache.hadoop.fs.{FileSystem,Path}
 
      //get the hdfs information from spark context
      val hdfs = FileSystem.get(spark.sparkContext.hadoopConfiguration)
      //create outFile in HDFS given the file name
-     hdfs.create(new Path(outFilePath))
+     val outFile = hdfs.create(new Path(outFilePath))
      //create a BufferedOutputStream to write to the file
-     // val out = new BufferedOutputStream(outFile)
+     val out = new BufferedOutputStream(outFile)
 
-     //use persist before applying udf
-     groupedPredictions.persist()
-     groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction"))
-       .coalesce(1)
-       .write.format("com.databricks.spark.csv")
-       .option("header", true)
-       .mode("overwrite")
-       //this didn't work somehow:
-       .save("hdfs://" + outFilePath)
-    /*
      model
        .clusterCenters
        .foreach { cluster =>
@@ -300,7 +287,18 @@ object AmazonProductsClustering {
          out.write('\n')
        }
      out.close()
+
       */
+
+     //use persist before applying udf
+     groupedPredictions.persist()
+     groupedPredictions.withColumn("ClusterInfo", clusterCentersInfo($"prediction"))
+       .coalesce(1)
+       .write.format("com.databricks.spark.csv")
+       .option("header", true)
+       .mode("overwrite")
+       //this didn't work somehow:
+       .save(outFilePath)
    }
 
 
@@ -358,11 +356,8 @@ object AmazonProductsClustering {
 
     //load reviews and metadata
     val amazonReviewsDF = jsonDataLoader(amazonReviewsFilePath)
-    amazonReviewsDF.persist()
     val amazonMetadataDF = jsonDataLoader(amazonMetadataFilePath)
-    amazonMetadataDF.persist()
     val amazonRatingsDF = findAvgProductRating(amazonReviewsDF)
-    amazonRatingsDF.persist()
     val productData = findProductFeatures(amazonRatingsDF, amazonMetadataDF)
 
     //generate an array of the top k categories to be considered as features for k-means clustering
@@ -391,7 +386,7 @@ object AmazonProductsClustering {
 
 
     //print or evaluate the model
-    printKmeansCenters(kmeansModel, topKCategories, outFilePath, spreadValue, prepareDataForClustering(productData, topKCategories, spreadValue) )
+    printKmeansCentersCluster(kmeansModel, topKCategories, outFilePath, spreadValue, prepareDataForClustering(productData, topKCategories, spreadValue) )
     //evaluateModel(kmeansModel, prepareDataForClustering(productData, topKCategories, clustersNumber))
 
 

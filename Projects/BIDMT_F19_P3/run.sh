@@ -2,7 +2,7 @@
 spark-submit \
   --master yarn \
   --deploy-mode cluster \
-  --class $class \
+  --class dk.itu.BIDMT.F19.P3.AmazonProductsClustering \
   --files application.conf \
   --conf spark.driver.extraJavaOptions=-Dconfig.file=application.conf \
   --conf spark.executor.extraJavaOptions=-Dconfig.file=application.conf \

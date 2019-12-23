@@ -12,10 +12,10 @@ scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 val sparkVersion = "2.4.4"
 
-libraryDependencies += "org.apache.spark" %% "spark-core"  % sparkVersion  //% "provided"
-libraryDependencies += "org.apache.spark" %% "spark-sql"   % sparkVersion  // % "provided"
-libraryDependencies += "org.apache.spark" %% "spark-yarn"  % sparkVersion  //% "provided"
-libraryDependencies += "org.apache.spark" %% "spark-mllib" % sparkVersion  //% "provided"
+libraryDependencies += "org.apache.spark" %% "spark-core"  % sparkVersion  % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-sql"   % sparkVersion  % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-yarn"  % sparkVersion  % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-mllib" % sparkVersion  % "provided"
 
 
 libraryDependencies += "com.typesafe" % "config" % "1.3.0"
